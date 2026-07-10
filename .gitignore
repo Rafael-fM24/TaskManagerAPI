@@ -1,0 +1,19 @@
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+*.sln.iml
+
+# User files
+*.user
+*.rsuser
+*.userprefs
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
