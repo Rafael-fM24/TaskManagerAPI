@@ -3,10 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5A93F614-C6A7-45F0-919A-2564A567BD60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{D8785878-99D4-4BEF-ADE4-64BAAE5E5A68}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A93F614-C6A7-45F0-919A-2564A567BD60} = {5A93F614-C6A7-45F0-919A-2564A567BD60}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{E434DD7B-3D40-4485-B076-97DBC2113A8D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D8785878-99D4-4BEF-ADE4-64BAAE5E5A68} = {D8785878-99D4-4BEF-ADE4-64BAAE5E5A68}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI", "Presentation\WebAPI\WebAPI.csproj", "{87416870-EF57-42C7-ACF1-F1D5B521A259}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D8785878-99D4-4BEF-ADE4-64BAAE5E5A68} = {D8785878-99D4-4BEF-ADE4-64BAAE5E5A68}
+		{E434DD7B-3D40-4485-B076-97DBC2113A8D} = {E434DD7B-3D40-4485-B076-97DBC2113A8D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

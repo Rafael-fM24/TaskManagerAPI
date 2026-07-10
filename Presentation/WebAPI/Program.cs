@@ -1,4 +1,15 @@
+using Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+Console.WriteLine(connectionString);
+
+builder.Services.AddControllers();
+
+//Dependency Injection
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
