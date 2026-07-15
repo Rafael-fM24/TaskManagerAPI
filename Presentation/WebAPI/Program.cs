@@ -1,10 +1,17 @@
+using Application.Mapping;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+//Teste para ver se a connction string está funcionando
+Console.WriteLine(connectionString);
+
 builder.Services.AddControllers();
+
+//Automapper
+builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
 
 //Dependency Injection
 builder.Services.AddInfrastructure(builder.Configuration);
