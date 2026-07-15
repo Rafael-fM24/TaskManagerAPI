@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,8 @@ public static class DependencyInjection
             options.UseMySql(
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)));
+
+        services.AddScoped<ITaskRepository, TaskRepository>();
         
         return services;
     }

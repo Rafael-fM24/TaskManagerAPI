@@ -4,8 +4,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-Console.WriteLine(connectionString);
-
 builder.Services.AddControllers();
 
 //Dependency Injection
@@ -46,6 +44,8 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+app.MapControllers();
 
 app.Run();
 
