@@ -19,7 +19,7 @@ public class TaskRepository : ITaskRepository
         _context.SaveChanges();
     }
 
-    public List<TaskItem> GetAll()
+    public IReadOnlyList<TaskItem> GetAll()
     {
         return _context.TaskItems.ToList();
     }

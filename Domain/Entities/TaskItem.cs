@@ -14,6 +14,7 @@ public class TaskItem
     public DateTime Created { get; set; }
     public DateTime DueDate { get; set; }
     public int Priority { get; set; }
+    public ICollection<TaskNote> Notes { get; set; }
 
     public TaskItem(string title, string description)
     {
