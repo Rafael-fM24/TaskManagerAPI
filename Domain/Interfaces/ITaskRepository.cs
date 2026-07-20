@@ -8,4 +8,7 @@ public interface ITaskRepository
     void Add(TaskItem taskItem);
     IReadOnlyList<TaskItem> GetAll();
     public TaskItem? GetById(Guid id);
+    
+    //TaskNote
+    IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId);
 }

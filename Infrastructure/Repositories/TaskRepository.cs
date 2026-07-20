@@ -28,4 +28,9 @@ public class TaskRepository : ITaskRepository
     {
         return _context.TaskItems.Find(id);
     }
+
+    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
+    {
+        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
+    }
 }
