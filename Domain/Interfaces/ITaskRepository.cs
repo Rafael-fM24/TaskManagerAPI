@@ -11,4 +11,5 @@ public interface ITaskRepository
     
     //TaskNote
     IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId);
+    void Add(TaskNote taskNote);
 }
