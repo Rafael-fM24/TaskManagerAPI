@@ -8,17 +8,17 @@ public class User
     
     public string Email { get; private set; } = string.Empty;
     
-    public string Password { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
     
     public ICollection<TaskItem> Tasks { get; private set; } = new List<TaskItem>();
     
     private User() { }
 
-    public User(string username, string email, string password)
+    public User(string username, string email, string passwordHash)
     {
         Id = Guid.NewGuid();
         Username = username;
         Email = email;
-        Password = password;
+        PasswordHash = passwordHash;
     }
 }

@@ -6,5 +6,5 @@ public class TaskNoteDTO
 {
     [Required]
     [MaxLength(1000)]
-    public string Note { get; set; } = string.Empty;
+    public string Note { get; init; } = string.Empty;
 }

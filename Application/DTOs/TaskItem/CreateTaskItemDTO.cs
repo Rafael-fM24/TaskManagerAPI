@@ -4,11 +4,11 @@ namespace Application.DTOs.TaskItem;
 
 public class CreateTaskItemDTO
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; init; }
     
     [Required]
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
 
     [Required] 
-    public string Description { get; set; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
 }

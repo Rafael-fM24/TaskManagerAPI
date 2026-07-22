@@ -1,4 +1,6 @@
-﻿using Domain.Interfaces;
+﻿using Application.Interfaces;
+using Application.Services;
+using Domain.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,12 @@ public static class DependencyInjection
         services.AddScoped<ITaskItemRepository, TaskItemRepository>();
         
         services.AddScoped<ITaskNoteRepository, TaskNoteRepository>();
+        
+        services.AddScoped<IUserRepository, UserRepository>();
+        
+        services.AddScoped<ITokenService, TokenService>();
+
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         
         return services;
     }
