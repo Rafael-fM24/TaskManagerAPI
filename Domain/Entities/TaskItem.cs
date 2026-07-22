@@ -7,15 +7,26 @@ namespace Domain.Entities;
 public class TaskItem
 {
     [Key]
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public bool Completed { get; set; }
-    public DateTime Created { get; set; }
-    public DateTime DueDate { get; set; }
-    public int Priority { get; set; }
-    public ICollection<TaskNote> Notes { get; set; }
+    public Guid Id { get; private set; }
 
+    public string Title { get; private set; } = string.Empty;
+
+    public string Description { get; private set; } = string.Empty;
+    
+    public bool Completed { get; private set; }
+    
+    public DateTime Created { get; private set; }
+    
+    public DateTime? DueDate { get; private set; }
+    
+    public int Priority { get; private set; }
+    
+    public ICollection<TaskNote> Notes { get; private set; } = new List<TaskNote>(); 
+
+    private TaskItem()
+    {
+    }
+    
     public TaskItem(string title, string description)
     {
         Id = Guid.NewGuid();
@@ -24,5 +35,10 @@ public class TaskItem
         Completed = false;
         Created = DateTime.UtcNow;
         Priority = 0;
+    }
+    
+    public void Complete()
+    {
+        Completed = true;
     }
 }

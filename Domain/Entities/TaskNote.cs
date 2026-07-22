@@ -7,13 +7,19 @@ namespace Domain.Entities;
 public class TaskNote 
 {
     [Key]
-    public int Id { get; set; }
-    public Guid TaskItemId { get; set; }
-    public string Note { get; set; }
+    public int Id { get; private set; }
+    
+    public Guid TaskItemId { get; private set; }
+    
+    public string Note { get; private set; }
     
     [ForeignKey(nameof(TaskItemId))]
-    public virtual TaskItem TaskItem { get; set; }
+    public virtual TaskItem TaskItem { get; private set; }
 
+    private TaskNote()
+    {
+    }
+    
     public TaskNote(Guid taskItemId, string note)
     {
         TaskItemId = taskItemId;
