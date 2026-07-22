@@ -1,13 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Domain.Entities;
 
-[Table("TaskItem")]
 public class TaskItem
 {
-    [Key]
     public Guid Id { get; private set; }
+    
+    public Guid UserId { get; private set; }
 
     public string Title { get; private set; } = string.Empty;
 
@@ -27,9 +24,10 @@ public class TaskItem
     {
     }
     
-    public TaskItem(string title, string description)
+    public TaskItem(Guid userId,string title, string description)
     {
         Id = Guid.NewGuid();
+        UserId = userId;
         Title = title;
         Description = description;
         Completed = false;
