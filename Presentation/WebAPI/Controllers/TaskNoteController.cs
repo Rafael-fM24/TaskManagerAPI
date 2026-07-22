@@ -10,29 +10,31 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class TaskNoteController : ControllerBase
 {
-    private readonly ITaskRepository _repository;
+    private readonly ITaskNoteRepository _taskNoteRepository;
+    private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
 
-    public TaskNoteController(ITaskRepository repository, IMapper mapper)
+    public TaskNoteController(ITaskNoteRepository taskNoteRepository, ITaskItemRepository taskItemRepository, IMapper mapper)
     {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _taskNoteRepository = taskNoteRepository ?? throw new ArgumentNullException(nameof(taskNoteRepository));
+        _taskItemRepository = taskItemRepository ?? throw new ArgumentNullException(nameof(taskItemRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    [HttpGet]
+    [HttpGet("{taskItemId:guid}")]
     public IActionResult Get(Guid taskItemId)
     {
-        var taskItem = _repository.GetById(taskItemId);
+        var notes = _taskNoteRepository.GetAllNotes(taskItemId);
         
-        var taskNoteDTO = _mapper.Map<IReadOnlyList<TaskNoteDTO>>(taskItem.Notes);
+        var taskNoteDTO = _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
         
         return Ok(taskNoteDTO);
     }
-
-    [HttpPost]
+    
+    [HttpPost("{taskItemId:guid}")]
     public IActionResult Post(Guid taskItemId, TaskNoteDTO dto)
     {
-        var task = _repository.GetById(taskItemId);
+        var task = _taskItemRepository.GetById(taskItemId);
         
         if (task == null)
         {
@@ -41,7 +43,7 @@ public class TaskNoteController : ControllerBase
         
         var note = new TaskNote(taskItemId, dto.Note);
 
-        _repository.Add(note);
+        _taskNoteRepository.Add(note);
 
         return Ok();
     }

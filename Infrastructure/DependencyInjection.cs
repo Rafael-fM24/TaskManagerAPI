@@ -18,7 +18,9 @@ public static class DependencyInjection
                 connectionString,
                 ServerVersion.AutoDetect(connectionString)));
 
-        services.AddScoped<ITaskRepository, TaskRepository>();
+        services.AddScoped<ITaskItemRepository, TaskItemRepository>();
+        
+        services.AddScoped<ITaskNoteRepository, TaskNoteRepository>();
         
         return services;
     }

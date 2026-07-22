@@ -10,19 +10,19 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class TaskItemController : ControllerBase
 {
-    private readonly ITaskRepository _repository;
+    private readonly ITaskItemRepository _itemRepository;
     private readonly IMapper _mapper;
 
-    public TaskItemController(ITaskRepository repository, IMapper mapper)
+    public TaskItemController(ITaskItemRepository itemRepository, IMapper mapper)
     {
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _itemRepository = itemRepository ?? throw new ArgumentNullException(nameof(itemRepository));
         _mapper = mapper ??  throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpGet]
     public IActionResult Get()
     {
-        var taskItems = _repository.GetAll();
+        var taskItems = _itemRepository.GetAll();
         
         var taskItemDTO =  _mapper.Map<IEnumerable<TaskItemDTO>>(taskItems);
             
@@ -34,7 +34,7 @@ public class TaskItemController : ControllerBase
     {
         var taskItem = _mapper.Map<TaskItem>(dto);
         
-        _repository.Add(taskItem);
+        _itemRepository.Add(taskItem);
         return Ok();
     }
 }

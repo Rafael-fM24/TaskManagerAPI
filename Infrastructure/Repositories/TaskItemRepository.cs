@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class TaskRepository : ITaskRepository
+public class TaskItemRepository : ITaskItemRepository
 {
     private readonly AppDbContext _context;
     
-    public TaskRepository(AppDbContext context)
+    public TaskItemRepository(AppDbContext context)
     {
         _context = context;
     }
@@ -30,16 +30,5 @@ public class TaskRepository : ITaskRepository
         return _context.TaskItems
             .Include(t => t.Notes)
             .FirstOrDefault(t => t.Id == id);
-    }
-
-    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
-    {
-        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
-    }
-
-    public void Add(TaskNote taskNote)
-    {
-        _context.TaskNotes.Add(taskNote);
-        _context.SaveChanges();
     }
 }
