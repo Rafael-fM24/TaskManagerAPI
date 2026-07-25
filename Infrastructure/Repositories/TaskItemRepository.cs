@@ -31,4 +31,11 @@ public class TaskItemRepository : ITaskItemRepository
             .Include(t => t.Notes)
             .FirstOrDefault(t => t.Id == id);
     }
+
+    public IReadOnlyList<TaskItem> GetByUserId(Guid userId)
+    {
+        return _context.TaskItems
+            .Where(t => t.UserId == userId)
+            .ToList();
+    }
 }

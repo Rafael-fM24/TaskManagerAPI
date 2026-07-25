@@ -24,7 +24,7 @@ public class TaskItem
     {
     }
     
-    public TaskItem(Guid userId,string title, string description)
+    public TaskItem(Guid userId,string title, string description, DateTime dueDate, int priority)
     {
         Id = Guid.NewGuid();
         UserId = userId;
@@ -32,6 +32,7 @@ public class TaskItem
         Description = description;
         Completed = false;
         Created = DateTime.UtcNow;
+        DueDate = dueDate.Date;
         Priority = 0;
     }
     

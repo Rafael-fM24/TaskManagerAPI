@@ -1,7 +1,5 @@
 using Application.DTOs.TaskNote;
-using AutoMapper;
-using Domain.Entities;
-using Domain.Interfaces;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,40 +10,25 @@ namespace WebAPI.Controllers;
 [Route("api/[controller]")]
 public class TaskNoteController : ControllerBase
 {
-    private readonly ITaskNoteRepository _taskNoteRepository;
-    private readonly ITaskItemRepository _taskItemRepository;
-    private readonly IMapper _mapper;
+    private readonly ITaskNoteService _taskNoteService;
 
-    public TaskNoteController(ITaskNoteRepository taskNoteRepository, ITaskItemRepository taskItemRepository, IMapper mapper)
+    public TaskNoteController(ITaskNoteService taskNoteService)
     {
-        _taskNoteRepository = taskNoteRepository ?? throw new ArgumentNullException(nameof(taskNoteRepository));
-        _taskItemRepository = taskItemRepository ?? throw new ArgumentNullException(nameof(taskItemRepository));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _taskNoteService = taskNoteService ?? throw new ArgumentNullException(nameof(taskNoteService));
     }
 
     [HttpGet("{taskItemId:guid}")]
     public IActionResult Get(Guid taskItemId)
     {
-        var notes = _taskNoteRepository.GetAllNotes(taskItemId);
-        
-        var taskNoteDTO = _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
-        
-        return Ok(taskNoteDTO);
+        var notes = _taskNoteService.GetAll(taskItemId);
+
+        return Ok(notes);
     }
     
     [HttpPost("{taskItemId:guid}")]
-    public IActionResult Post(Guid taskItemId, TaskNoteDTO dto)
+    public IActionResult Post(Guid taskItemId, CreateTaskNoteDTO dto)
     {
-        var task = _taskItemRepository.GetById(taskItemId);
-        
-        if (task == null)
-        {
-            return NotFound("Task não encontrada.");
-        }
-        
-        var note = new TaskNote(taskItemId, dto.Note);
-
-        _taskNoteRepository.Add(note);
+        _taskNoteService.Create(taskItemId, dto);
 
         return Ok();
     }
