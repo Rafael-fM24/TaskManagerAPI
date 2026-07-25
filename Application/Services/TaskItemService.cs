@@ -26,14 +26,20 @@ public class TaskItemService : ITaskItemService
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
     }
 
-    public async Task Create(CreateTaskItemDTO dto)
+    public async Task Create(Guid userId,CreateTaskItemDTO dto)
     {
-        var user = await _userRepository.GetByIdAsync(dto.UserId);
+        var user = await _userRepository.GetByIdAsync(userId);
 
         if (user == null)
             throw new Exception("Usuário não encontrado.");
 
-        var taskItem = _mapper.Map<TaskItem>(dto);
+        var taskItem = new TaskItem(
+            userId,
+            dto.Title,
+            dto.Description,
+            dto.DueDate,
+            dto.Priority);
+
 
         _taskItemRepository.Add(taskItem);
     }

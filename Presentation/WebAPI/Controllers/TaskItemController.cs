@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Application.DTOs.TaskItem;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,12 @@ public class TaskItemController : ControllerBase
     [HttpPost("{userId:guid}")]
     public async Task<IActionResult> Post(CreateTaskItemDTO dto)
     {
-        await _taskItemService.Create(dto);
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        
+        if (!Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+        
+        await _taskItemService.Create(userId, dto);
 
         return Ok();
     }

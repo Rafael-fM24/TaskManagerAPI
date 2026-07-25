@@ -5,9 +5,6 @@ namespace Application.DTOs.TaskItem;
 public class CreateTaskItemDTO
 {
     [Required]
-    public Guid UserId { get; init; }
-    
-    [Required]
     public string Title { get; init; } = string.Empty;
 
     [Required] 

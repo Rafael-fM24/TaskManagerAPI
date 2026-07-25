@@ -5,5 +5,5 @@ namespace Application.Interfaces;
 public interface ITaskItemService
 {
     IReadOnlyList<TaskItemDTO> GetByUserId(Guid userId);
-    Task Create(CreateTaskItemDTO dto);
+    Task Create(Guid userId,CreateTaskItemDTO dto);
 }
