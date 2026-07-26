@@ -6,7 +6,7 @@ public class TaskNote
     
     public Guid TaskItemId { get; private set; }
     
-    public string Note { get; private set; }
+    public string Note { get; set; }
 
     private TaskNote()
     {

@@ -6,5 +6,6 @@ public interface ITaskNoteRepository
 {
     void Add(TaskNote taskNote);
     IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId);
-    bool RemoveById(int id);
+    void RemoveById(int id);
+    void Update(int id, string note);
 }

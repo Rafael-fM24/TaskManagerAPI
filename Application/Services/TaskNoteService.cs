@@ -1,4 +1,3 @@
-using Application.DTOs.TaskItem;
 using Application.DTOs.TaskNote;
 using Application.Interfaces;
 using AutoMapper;
@@ -39,8 +38,13 @@ public class TaskNoteService : ITaskNoteService
         _taskNoteRepository.Add(note);
     }
 
-    public bool Delete(int id)
+    public void Delete(int id)
     {
-        return _taskNoteRepository.RemoveById(id);
+        _taskNoteRepository.RemoveById(id);
+    }
+
+    public void Update(int id, UpdateTaskNoteDTO dto)
+    {
+        _taskNoteRepository.Update(id, dto.Note);
     }
 }

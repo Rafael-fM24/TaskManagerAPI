@@ -24,16 +24,26 @@ public class TaskNoteRepository :  ITaskNoteRepository
         return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
     }
 
-    public bool RemoveById(int id)
+    public void RemoveById(int id)
     {
         var taskNote = _context.TaskNotes.Find(id);
 
         if (taskNote == null)
             throw new Exception("TaskNote não encontrada.");
         
-        _context.TaskNotes.Remove(_context.TaskNotes.Find(id));
+        _context.TaskNotes.Remove(taskNote);
         _context.SaveChanges();
+    }
+
+    public void Update(int id, string note)
+    {
+        var taskNote =  _context.TaskNotes.Find(id);
         
-        return true;
+        if (taskNote == null)
+            throw new Exception("TaskNote não encontrada.");
+        
+        taskNote.Note = note;
+        
+        _context.SaveChanges();
     }
 }

@@ -30,14 +30,21 @@ public class TaskNoteController : ControllerBase
     {
         _taskNoteService.Create(taskItemId, dto);
 
-        return Ok();
+        return StatusCode(StatusCodes.Status201Created);
+    }
+
+    [HttpPut("{id:int}")]
+    public IActionResult Put(int id, UpdateTaskNoteDTO dto)
+    {
+        _taskNoteService.Update(id, dto);
+
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
-        if (!_taskNoteService.Delete(id))
-            return NotFound();
+        _taskNoteService.Delete(id);
         
         return NoContent();
     }
