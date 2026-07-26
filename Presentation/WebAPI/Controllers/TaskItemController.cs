@@ -18,15 +18,20 @@ public class TaskItemController : ControllerBase
         _taskItemService = taskItemService ?? throw new ArgumentNullException(nameof(taskItemService));
     }
     
-    [HttpGet("{userId:guid}")]
-    public IActionResult Get(Guid userId)
+    [HttpGet]
+    public IActionResult Get()
     {
-        var tasks = _taskItemService.GetByUserId(userId);
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!Guid.TryParse(userId, out var id))
+            return Unauthorized();
+
+        var tasks = _taskItemService.GetByUserId(id);
 
         return Ok(tasks);
     }
 
-    [HttpPost("{userId:guid}")]
+    [HttpPost]
     public async Task<IActionResult> Post(CreateTaskItemDTO dto)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

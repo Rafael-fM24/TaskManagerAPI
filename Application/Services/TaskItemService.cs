@@ -26,7 +26,7 @@ public class TaskItemService : ITaskItemService
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
     }
 
-    public async Task Create(Guid userId,CreateTaskItemDTO dto)
+    public async Task Create(Guid userId, CreateTaskItemDTO dto)
     {
         var user = await _userRepository.GetByIdAsync(userId);
 
