@@ -32,4 +32,13 @@ public class TaskNoteController : ControllerBase
 
         return Ok();
     }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult Delete(int id)
+    {
+        if (!_taskNoteService.Delete(id))
+            return NotFound();
+        
+        return NoContent();
+    }
 }

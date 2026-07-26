@@ -6,4 +6,5 @@ public interface ITaskNoteService
 {
     IReadOnlyList<TaskNoteDTO> GetAll(Guid taskItemId);
     void Create(Guid taskItemId, CreateTaskNoteDTO dto);
+    bool Delete(int id);
 }

@@ -38,4 +38,9 @@ public class TaskNoteService : ITaskNoteService
 
         _taskNoteRepository.Add(note);
     }
+
+    public bool Delete(int id)
+    {
+        return _taskNoteRepository.RemoveById(id);
+    }
 }
