@@ -39,8 +39,22 @@ public class TaskItemService : ITaskItemService
             dto.Description,
             dto.DueDate,
             dto.Priority);
-
-
+        
         _taskItemRepository.Add(taskItem);
+    }
+
+    public void Update(Guid id, UpdateTaskItemDTO dto)
+    {
+        _taskItemRepository
+            .Update(id,
+            dto.Title, 
+            dto.Description, 
+            dto.DueDate, 
+            dto.Priority);
+    }
+
+    public void Delete(Guid id)
+    {
+        _taskItemRepository.Remove(id);
     }
 }

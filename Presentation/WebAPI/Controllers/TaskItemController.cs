@@ -43,4 +43,20 @@ public class TaskItemController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPut("{id:guid}")]
+    public IActionResult Put(Guid id, UpdateTaskItemDTO dto)
+    {
+        _taskItemService.Update(id, dto);
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public IActionResult Delete(Guid id)
+    {
+        _taskItemService.Delete(id);
+
+        return NoContent();
+    }
 }

@@ -40,7 +40,7 @@ public class TaskNoteService : ITaskNoteService
 
     public void Delete(int id)
     {
-        _taskNoteRepository.RemoveById(id);
+        _taskNoteRepository.Remove(id);
     }
 
     public void Update(int id, UpdateTaskNoteDTO dto)

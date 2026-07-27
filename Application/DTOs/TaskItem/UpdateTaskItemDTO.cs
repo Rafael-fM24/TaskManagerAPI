@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.DTOs.TaskItem;
 
-public class CreateTaskItemDTO
+public class UpdateTaskItemDTO
 {
     [Required]
     [MaxLength(100)]
     public string Title { get; init; } = string.Empty;
 
-    [Required] 
+    [Required]
     [MaxLength(100)]
     public string Description { get; init; } = string.Empty;
     

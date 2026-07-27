@@ -19,12 +19,7 @@ public class TaskNoteRepository :  ITaskNoteRepository
         _context.SaveChanges();
     }
 
-    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
-    {
-        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
-    }
-
-    public void RemoveById(int id)
+    public void Remove(int id)
     {
         var taskNote = _context.TaskNotes.Find(id);
 
@@ -45,5 +40,10 @@ public class TaskNoteRepository :  ITaskNoteRepository
         taskNote.Note = note;
         
         _context.SaveChanges();
+    }
+    
+    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
+    {
+        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
     }
 }

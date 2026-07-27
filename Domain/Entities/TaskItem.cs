@@ -40,6 +40,18 @@ public class TaskItem
         Priority = priority;
     }
     
+    public void Update(
+        string title,
+        string description,
+        DateTime dueDate,
+        int priority)
+    {
+        Title = title;
+        Description = description;
+        DueDate = dueDate;
+        Priority = priority;
+    }
+    
     public void Complete()
     {
         Completed = true;

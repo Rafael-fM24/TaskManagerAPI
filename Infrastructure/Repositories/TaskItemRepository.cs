@@ -20,6 +20,29 @@ public class TaskItemRepository : ITaskItemRepository
         _context.SaveChanges();
     }
 
+    public void Update(Guid id, string title, string description, DateTime dueDate, int priority)
+    {
+        var taskItem = _context.TaskItems.Find(id);
+        
+        if (taskItem == null)
+            throw new Exception("TaskItem não encontrada.");
+
+        taskItem.Update(title, description, dueDate, priority);
+
+        _context.SaveChanges();
+    }
+
+    public void Remove(Guid id)
+    {
+        var taskItem = _context.TaskItems.Find(id);
+        
+        if (taskItem == null)
+            throw new Exception("TaskItem não existe.");
+        
+        _context.TaskItems.Remove(taskItem);
+        _context.SaveChanges();
+    }
+
     public IReadOnlyList<TaskItem> GetAll()
     {
         return _context.TaskItems.ToList();
