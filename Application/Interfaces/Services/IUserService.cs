@@ -1,11 +1,17 @@
 using Application.DTOs.User;
 using Domain.Entities;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface IUserService
 {
     Task RegisterAsync(RegisterUserDTO dto);
 
     Task<User?> AuthenticateAsync(LoginUserDTO dto);
+    
+    Task<UserDTO?> GetCurrentUserAsync();
+    
+    Task Update(UpdateUserDTO dto);
+
+    Task ChangePasswordAsync(ChangePasswordDTO dto);
 }

@@ -1,5 +1,5 @@
+using Application.Interfaces.Repositories;
 using Domain.Entities;
-using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,11 +41,6 @@ public class TaskItemRepository : ITaskItemRepository
         
         _context.TaskItems.Remove(taskItem);
         _context.SaveChanges();
-    }
-
-    public IReadOnlyList<TaskItem> GetAll()
-    {
-        return _context.TaskItems.ToList();
     }
 
     public TaskItem? GetById(Guid id)

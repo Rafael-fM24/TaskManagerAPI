@@ -1,5 +1,5 @@
+using Application.Interfaces.Repositories;
 using Domain.Entities;
-using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,12 +28,20 @@ public class UserRepository : IUserRepository
     public async Task AddAsync(User user)
     {
         await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(User user)
+    public async Task UpdateAsync(Guid id, string name, string email)
     {
-        _context.Users.Remove(user);
+        var user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+            throw new Exception("Usuário não encontrado.");
+
+        user.Update(name, email);
+    }
+    
+    public async Task SaveAsync()
+    {
         await _context.SaveChangesAsync();
     }
 }

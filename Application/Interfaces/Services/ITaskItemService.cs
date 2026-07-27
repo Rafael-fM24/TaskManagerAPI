@@ -1,11 +1,11 @@
 using Application.DTOs.TaskItem;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface ITaskItemService
 {
-    IReadOnlyList<TaskItemDTO> GetByUserId(Guid userId);
-    Task Create(Guid userId,CreateTaskItemDTO dto);
+    IReadOnlyList<TaskItemDTO> GetAllTasks();
+    Task Create(CreateTaskItemDTO dto);
     void Update(Guid id,UpdateTaskItemDTO dto);
     void Delete(Guid id);
 }

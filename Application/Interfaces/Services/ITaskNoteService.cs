@@ -1,6 +1,6 @@
 using Application.DTOs.TaskNote;
 
-namespace Application.Interfaces;
+namespace Application.Interfaces.Services;
 
 public interface ITaskNoteService
 {

@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Domain.Interfaces;
+namespace Application.Interfaces.Repositories;
 
 public interface IUserRepository
 {
@@ -10,5 +10,7 @@ public interface IUserRepository
     
     Task AddAsync(User user);
 
-    Task DeleteAsync(User user);
+    Task UpdateAsync(Guid id, string user, string email);
+
+    Task SaveAsync();
 }

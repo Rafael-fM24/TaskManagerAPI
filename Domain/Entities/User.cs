@@ -21,4 +21,24 @@ public class User
         Email = email;
         PasswordHash = passwordHash;
     }
+
+    public void Update(string username, string email)
+    {
+        if (string.IsNullOrWhiteSpace(username))
+            throw new ArgumentException("O nome é obrigatório.");
+
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentException("O e-mail é obrigatório.");
+
+        Username = username;
+        Email = email;
+    }
+    
+    public void ChangePassword(string passwordHash)
+    {
+        if (string.IsNullOrWhiteSpace(passwordHash))
+            throw new ArgumentException("Hash da senha inválido.");
+
+        PasswordHash = passwordHash;
+    }
 }

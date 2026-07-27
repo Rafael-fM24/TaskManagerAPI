@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Application.DTOs.TaskItem;
 using Application.Interfaces;
+using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,14 +20,9 @@ public class TaskItemController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetMyTasks()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        if (!Guid.TryParse(userId, out var id))
-            return Unauthorized();
-
-        var tasks = _taskItemService.GetByUserId(id);
+        var tasks = _taskItemService.GetAllTasks();
 
         return Ok(tasks);
     }
@@ -34,12 +30,7 @@ public class TaskItemController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(CreateTaskItemDTO dto)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
-        if (!Guid.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
-        
-        await _taskItemService.Create(userId, dto);
+        await _taskItemService.Create(dto);
 
         return Ok();
     }

@@ -17,6 +17,8 @@ builder.Services.AddControllers();
 //Automapper
 builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
 
+builder.Services.AddHttpContextAccessor();
+
 //Dependency Injection
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();

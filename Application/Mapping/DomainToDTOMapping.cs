@@ -1,5 +1,6 @@
 using Application.DTOs.TaskItem;
 using Application.DTOs.TaskNote;
+using Application.DTOs.User;
 using AutoMapper;
 using Domain.Entities;
 
@@ -13,5 +14,7 @@ public class DomainToDTOMapping :  Profile
         CreateMap<CreateTaskItemDTO, TaskItem>();
 
         CreateMap<TaskNote, TaskNoteDTO>();
+
+        CreateMap<User, UserDTO>();
     }
 }

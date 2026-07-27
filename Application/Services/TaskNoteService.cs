@@ -1,8 +1,9 @@
 using Application.DTOs.TaskNote;
 using Application.Interfaces;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Interfaces;
 
 namespace Application.Services;
 

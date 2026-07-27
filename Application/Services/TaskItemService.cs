@@ -1,8 +1,9 @@
 using Application.DTOs.TaskItem;
 using Application.Interfaces;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Interfaces;
 
 namespace Application.Services;
 
@@ -11,30 +12,31 @@ public class TaskItemService : ITaskItemService
     private readonly IUserRepository _userRepository;
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
+    private readonly ICurrentUserService _currentUserService;
 
-    public TaskItemService(ITaskItemRepository taskItemRepository, IMapper mapper, IUserRepository userRepository)
+    public TaskItemService(ITaskItemRepository taskItemRepository, IMapper mapper, IUserRepository userRepository, ICurrentUserService currentUserService)
     {
         _taskItemRepository = taskItemRepository;
         _mapper = mapper;
         _userRepository = userRepository;
+        _currentUserService = currentUserService;
     }
 
-    public IReadOnlyList<TaskItemDTO> GetByUserId(Guid userId)
+    public IReadOnlyList<TaskItemDTO> GetAllTasks()
     {
+        var userId = _currentUserService.UserId;
+        
         var taskItems = _taskItemRepository.GetByUserId(userId);
 
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
     }
 
-    public async Task Create(Guid userId, CreateTaskItemDTO dto)
+    public async Task Create(CreateTaskItemDTO dto)
     {
-        var user = await _userRepository.GetByIdAsync(userId);
-
-        if (user == null)
-            throw new Exception("Usuário não encontrado.");
+        var user = _currentUserService.UserId;
 
         var taskItem = new TaskItem(
-            userId,
+            user,
             dto.Title,
             dto.Description,
             dto.DueDate,

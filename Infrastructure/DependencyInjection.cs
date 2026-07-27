@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
-using Domain.Interfaces;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
@@ -29,6 +30,8 @@ public static class DependencyInjection
         services.AddScoped<ITokenService, TokenService>();
 
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         
         return services;
     }
