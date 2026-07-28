@@ -1,3 +1,5 @@
+using Domain.Enums;
+
 namespace Application.DTOs.TaskItem;
 
 public class TaskItemDTO
@@ -8,5 +10,5 @@ public class TaskItemDTO
     public bool Completed { get; init; }
     public DateTime Created { get; init; }
     public DateTime DueDate { get; init; }
-    public int Priority { get; init; }
+    public PriorityLevel Priority { get; init; }
 }

@@ -1,3 +1,6 @@
+using Domain.Enums;
+using Domain.Exceptions;
+
 namespace Domain.Entities;
 
 public class TaskItem
@@ -16,7 +19,7 @@ public class TaskItem
     
     public DateTime? DueDate { get; private set; }
     
-    public int Priority { get; private set; }
+    public PriorityLevel Priority { get; private set; }
     
     public ICollection<TaskNote> Notes { get; private set; } = new List<TaskNote>(); 
 
@@ -24,12 +27,20 @@ public class TaskItem
     {
     }
     
+    private static void ValidatePriority(PriorityLevel priority)
+    {
+        if (!Enum.IsDefined(priority))
+            throw new DomainException("Prioridade inválida.");
+    }
+    
     public TaskItem(Guid userId,
         string title, 
         string description, 
         DateTime dueDate, 
-        int priority)
+        PriorityLevel priority)
     {
+        ValidatePriority(priority);
+        
         Id = Guid.NewGuid();
         UserId = userId;
         Title = title;
@@ -44,11 +55,13 @@ public class TaskItem
         string title,
         string description,
         DateTime dueDate,
-        int priority)
+        PriorityLevel priority)
     {
+        ValidatePriority(priority);
+        
         Title = title;
         Description = description;
-        DueDate = dueDate;
+        DueDate = dueDate.Date;
         Priority = priority;
     }
     

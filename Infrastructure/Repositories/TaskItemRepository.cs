@@ -1,5 +1,6 @@
 using Application.Interfaces.Repositories;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +21,7 @@ public class TaskItemRepository : ITaskItemRepository
         _context.SaveChanges();
     }
 
-    public void Update(Guid id, string title, string description, DateTime dueDate, int priority)
+    public void Update(Guid id, string title, string description, DateTime dueDate, PriorityLevel priority)
     {
         var taskItem = _context.TaskItems.Find(id);
         

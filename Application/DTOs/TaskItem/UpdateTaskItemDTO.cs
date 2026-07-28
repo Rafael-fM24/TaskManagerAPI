@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Enums;
 
 namespace Application.DTOs.TaskItem;
 
@@ -14,5 +15,5 @@ public class UpdateTaskItemDTO
     
     public DateTime DueDate { get; init; }
     
-    public int Priority { get; init; }
+    public PriorityLevel Priority { get; init; }
 }
