@@ -41,6 +41,7 @@ public class TaskItemService : ITaskItemService
             dto.Priority);
         
         _taskItemRepository.Add(taskItem);
+        _taskItemRepository.Save();
     }
 
     public void Update(Guid id, UpdateTaskItemDTO dto)
@@ -57,6 +58,7 @@ public class TaskItemService : ITaskItemService
             dto.Priority);
 
         _taskItemRepository.Update(task);
+        _taskItemRepository.Save();
     }
 
     public void Complete(Guid id)
@@ -69,10 +71,12 @@ public class TaskItemService : ITaskItemService
         task.Complete();
 
         _taskItemRepository.Update(task);
+        _taskItemRepository.Save();
     }
 
     public void Delete(Guid id)
     {
         _taskItemRepository.Remove(id);
+        _taskItemRepository.Save();
     }
 }

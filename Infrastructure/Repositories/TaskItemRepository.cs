@@ -14,29 +14,6 @@ public class TaskItemRepository : ITaskItemRepository
     {
         _context = context;
     }
-    
-    public void Add(TaskItem taskItem)
-    {
-        _context.TaskItems.Add(taskItem);
-        _context.SaveChanges();
-    }
-
-    public void Update(TaskItem taskItem)
-    {
-        _context.TaskItems.Update(taskItem);
-        _context.SaveChanges();
-    }
-
-    public void Remove(Guid id)
-    {
-        var taskItem = _context.TaskItems.Find(id);
-        
-        if (taskItem == null)
-            throw new Exception("TaskItem not found");
-        
-        _context.TaskItems.Remove(taskItem);
-        _context.SaveChanges();
-    }
 
     public TaskItem? GetById(Guid id)
     {
@@ -50,5 +27,30 @@ public class TaskItemRepository : ITaskItemRepository
         return _context.TaskItems
             .Where(t => t.UserId == userId)
             .ToList();
+    }
+
+    public void Add(TaskItem taskItem)
+    {
+        _context.TaskItems.Add(taskItem);
+    }
+
+    public void Update(TaskItem taskItem)
+    {
+        _context.TaskItems.Update(taskItem);
+    }
+
+    public void Remove(Guid id)
+    {
+        var taskItem = _context.TaskItems.Find(id);
+        
+        if (taskItem == null)
+            throw new Exception("TaskItem not found");
+        
+        _context.TaskItems.Remove(taskItem);
+    }
+
+    public void Save()
+    {
+        _context.SaveChanges();
     }
 }

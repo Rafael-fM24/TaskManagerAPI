@@ -37,15 +37,18 @@ public class TaskNoteService : ITaskNoteService
         var note = new TaskNote(taskItemId, dto.Note);
 
         _taskNoteRepository.Add(note);
+        _taskNoteRepository.Save();
     }
 
     public void Delete(int id)
     {
         _taskNoteRepository.Remove(id);
+        _taskNoteRepository.Save();
     }
 
     public void Update(int id, UpdateTaskNoteDTO dto)
     {
         _taskNoteRepository.Update(id, dto.Note);
+        _taskNoteRepository.Save();
     }
 }

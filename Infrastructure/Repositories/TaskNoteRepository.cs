@@ -12,11 +12,15 @@ public class TaskNoteRepository :  ITaskNoteRepository
     {
         _context =  context;
     }
-    
+
+    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
+    {
+        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
+    }
+
     public void Add(TaskNote taskNote)
     {
         _context.TaskNotes.Add(taskNote);
-        _context.SaveChanges();
     }
 
     public void Remove(int id)
@@ -27,7 +31,6 @@ public class TaskNoteRepository :  ITaskNoteRepository
             throw new Exception("TaskNote not found");
         
         _context.TaskNotes.Remove(taskNote);
-        _context.SaveChanges();
     }
 
     public void Update(int id, string note)
@@ -38,12 +41,10 @@ public class TaskNoteRepository :  ITaskNoteRepository
             throw new Exception("TaskNote not found");
         
         taskNote.Note = note;
-        
-        _context.SaveChanges();
     }
-    
-    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
+
+    public void Save()
     {
-        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
+        _context.SaveChanges();
     }
 }
