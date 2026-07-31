@@ -40,6 +40,14 @@ public class TaskItemController : ControllerBase
 
         return NoContent();
     }
+    
+    [HttpPatch("{id:guid}/complete")]
+    public IActionResult Complete(Guid id)
+    {
+        _taskItemService.Complete(id);
+
+        return NoContent();
+    }
 
     [HttpDelete("{id:guid}")]
     public IActionResult Delete(Guid id)

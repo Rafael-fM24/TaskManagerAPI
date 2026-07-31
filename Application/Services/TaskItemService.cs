@@ -3,6 +3,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -44,12 +45,30 @@ public class TaskItemService : ITaskItemService
 
     public void Update(Guid id, UpdateTaskItemDTO dto)
     {
-        _taskItemRepository
-            .Update(id,
-            dto.Title, 
-            dto.Description, 
-            dto.DueDate, 
+        var task = _taskItemRepository.GetById(id);
+
+        if (task == null)
+            throw new Exception("Task not found.");
+
+        task.Update(
+            dto.Title,
+            dto.Description,
+            dto.DueDate,
             dto.Priority);
+
+        _taskItemRepository.Update(task);
+    }
+
+    public void Complete(Guid id)
+    {
+        var task = _taskItemRepository.GetById(id);
+
+        if (task == null)
+            throw new DomainException("Tarefa não encontrada.");
+
+        task.Complete();
+
+        _taskItemRepository.Update(task);
     }
 
     public void Delete(Guid id)

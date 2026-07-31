@@ -21,15 +21,9 @@ public class TaskItemRepository : ITaskItemRepository
         _context.SaveChanges();
     }
 
-    public void Update(Guid id, string title, string description, DateTime dueDate, PriorityLevel priority)
+    public void Update(TaskItem taskItem)
     {
-        var taskItem = _context.TaskItems.Find(id);
-        
-        if (taskItem == null)
-            throw new Exception("TaskItem not found");
-
-        taskItem.Update(title, description, dueDate, priority);
-
+        _context.TaskItems.Update(taskItem);
         _context.SaveChanges();
     }
 
