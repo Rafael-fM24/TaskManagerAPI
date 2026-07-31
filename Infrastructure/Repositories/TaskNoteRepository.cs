@@ -24,7 +24,7 @@ public class TaskNoteRepository :  ITaskNoteRepository
         var taskNote = _context.TaskNotes.Find(id);
 
         if (taskNote == null)
-            throw new Exception("TaskNote não encontrada.");
+            throw new Exception("TaskNote not found");
         
         _context.TaskNotes.Remove(taskNote);
         _context.SaveChanges();
@@ -35,7 +35,7 @@ public class TaskNoteRepository :  ITaskNoteRepository
         var taskNote =  _context.TaskNotes.Find(id);
         
         if (taskNote == null)
-            throw new Exception("TaskNote não encontrada.");
+            throw new Exception("TaskNote not found");
         
         taskNote.Note = note;
         

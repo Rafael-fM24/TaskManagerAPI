@@ -3,22 +3,19 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Enums;
 
 namespace Application.Services;
 
 public class TaskItemService : ITaskItemService
 {
-    private readonly IUserRepository _userRepository;
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
 
-    public TaskItemService(ITaskItemRepository taskItemRepository, IMapper mapper, IUserRepository userRepository, ICurrentUserService currentUserService)
+    public TaskItemService(ITaskItemRepository taskItemRepository, IMapper mapper, ICurrentUserService currentUserService)
     {
         _taskItemRepository = taskItemRepository;
         _mapper = mapper;
-        _userRepository = userRepository;
         _currentUserService = currentUserService;
     }
 

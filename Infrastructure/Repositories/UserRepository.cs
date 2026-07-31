@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         var user = await _context.Users.FindAsync(id);
 
         if (user == null)
-            throw new Exception("Usuário não encontrado.");
+            throw new Exception("User not found");
 
         user.Update(name, email);
     }

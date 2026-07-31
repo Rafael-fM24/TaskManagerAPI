@@ -26,7 +26,7 @@ public class TaskItemRepository : ITaskItemRepository
         var taskItem = _context.TaskItems.Find(id);
         
         if (taskItem == null)
-            throw new Exception("TaskItem não encontrada.");
+            throw new Exception("TaskItem not found");
 
         taskItem.Update(title, description, dueDate, priority);
 
@@ -38,7 +38,7 @@ public class TaskItemRepository : ITaskItemRepository
         var taskItem = _context.TaskItems.Find(id);
         
         if (taskItem == null)
-            throw new Exception("TaskItem não existe.");
+            throw new Exception("TaskItem not found");
         
         _context.TaskItems.Remove(taskItem);
         _context.SaveChanges();

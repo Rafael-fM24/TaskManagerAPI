@@ -27,7 +27,7 @@ public class UserService : IUserService
         var userExists = await _userRepository.GetByEmailAsync(dto.Email);
 
         if (userExists != null)
-            throw new Exception("Usuário já existe.");
+            throw new Exception("User already exists");
 
         var passwordHash = _passwordHasher.Hash(dto.Password);
 
@@ -86,10 +86,10 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(userId);
 
         if (user == null)
-            throw new Exception("Usuário não encontrado.");
+            throw new Exception("User not found");
 
         if (!_passwordHasher.Verify(dto.CurrentPassword, user.PasswordHash))
-            throw new Exception("Senha atual incorreta.");
+            throw new Exception("Incorrect current password");
 
         var newHash = _passwordHasher.Hash(dto.NewPassword);
 

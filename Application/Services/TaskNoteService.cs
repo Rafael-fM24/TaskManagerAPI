@@ -32,7 +32,7 @@ public class TaskNoteService : ITaskNoteService
         var task = _taskItemRepository.GetById(taskItemId);
 
         if (task == null)
-            throw new Exception("Task não encontrada.");
+            throw new Exception("Task not found");
 
         var note = new TaskNote(taskItemId, dto.Note);
 

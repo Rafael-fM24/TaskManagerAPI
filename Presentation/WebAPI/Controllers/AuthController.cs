@@ -1,5 +1,4 @@
 using Application.DTOs.User;
-using Application.Interfaces;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +34,7 @@ public class AuthController : ControllerBase
         if (user is null)
             return Unauthorized(new
             {
-                message = "Email ou senha inválidos."
+                message = "Invalid email or password"
             });
 
 

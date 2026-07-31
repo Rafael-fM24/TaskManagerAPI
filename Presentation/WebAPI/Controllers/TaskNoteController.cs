@@ -1,5 +1,4 @@
 using Application.DTOs.TaskNote;
-using Application.Interfaces;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
