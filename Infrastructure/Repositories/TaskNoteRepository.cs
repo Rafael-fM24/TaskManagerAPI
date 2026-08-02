@@ -40,7 +40,7 @@ public class TaskNoteRepository :  ITaskNoteRepository
         if (taskNote == null)
             throw new Exception("TaskNote not found");
         
-        taskNote.Note = note;
+        taskNote.Update(note);
     }
 
     public void Save()
