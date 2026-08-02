@@ -1,6 +1,5 @@
 using System.Text;
 using Application;
-using Application.Mapping;
 using Application.Settings;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,9 +12,6 @@ builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddControllers();
-
-//Automapper
-builder.Services.AddAutoMapper(typeof(DomainToDTOMapping));
 
 builder.Services.AddHttpContextAccessor();
 
