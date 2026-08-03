@@ -5,7 +5,7 @@ REST API developed in ASP.NET Core for managing tasks, notes, and users, utilizi
 ## Technologies
 
 - ASP.NET Core
-- W#
+- C#
 - Entity Framework Core
 - SQLServer
 - JWT Authentication
