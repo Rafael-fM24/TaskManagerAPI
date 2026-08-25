@@ -13,5 +13,7 @@ public interface IUserService
     
     Task Update(UpdateUserDTO dto);
 
+    Task Delete();
+
     Task ChangePasswordAsync(ChangePasswordDTO dto);
 }

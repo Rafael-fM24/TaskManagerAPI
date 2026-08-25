@@ -16,8 +16,7 @@ public class UsersController : ControllerBase
     {
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     }
-
-    [Authorize]
+    
     [HttpGet]
     public async Task<IActionResult> GetMe()
     {
@@ -29,8 +28,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
     
-    [Authorize]
-    [HttpPut]
+    [HttpPut("me")]
     public async Task<IActionResult> UpdateAsync(UpdateUserDTO dto)
     {
         await _userService.Update(dto);
@@ -38,13 +36,20 @@ public class UsersController : ControllerBase
         return NoContent();
     }
     
-    [Authorize]
     [HttpPut("password")]
     public async Task<IActionResult> ChangePassword(
         ChangePasswordDTO dto)
     {
         await _userService.ChangePasswordAsync(dto);
 
+        return NoContent();
+    }
+
+    [HttpDelete("me")]
+    public async Task<IActionResult> DeleteAsync()
+    {
+        await _userService.Delete();
+        
         return NoContent();
     }
 }

@@ -39,7 +39,15 @@ public class UserRepository : IUserRepository
 
         user.Update(name, email);
     }
-    
+
+    public async Task DeleteUserIdAsync(Guid id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        
+        if (user is not null)
+            _context.Users.Remove(user);
+    }
+
     public async Task SaveAsync()
     {
         await _context.SaveChangesAsync();

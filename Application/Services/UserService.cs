@@ -4,6 +4,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -71,11 +72,24 @@ public class UserService : IUserService
         return _mapper.Map<UserDTO>(user);
     }
 
-    public async Task Update( UpdateUserDTO dto)
+    public async Task Update(UpdateUserDTO dto)
     {
         var user = _currentUserService.UserId;
         
         await _userRepository.UpdateAsync(user,dto.Username, dto.Email);
+        await _userRepository.SaveAsync();
+    }
+
+    public async Task Delete()
+    {
+        var userId = _currentUserService.UserId;
+
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user is null)
+            throw new NotFoundException("User not found.");
+        
+        await _userRepository.DeleteUserIdAsync(userId);
         await _userRepository.SaveAsync();
     }
 
