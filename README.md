@@ -77,7 +77,7 @@ Example:
 
 After starting the application:
 
-https://localhost:5001/swagger
+https://localhost:5129/swagger
 
 ## API Endpoints
 
@@ -85,8 +85,8 @@ https://localhost:5001/swagger
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Authenticate a user and generate a JWT token |
+| POST | `/api/Auth/register` | Register a new user |
+| POST | `/api/Auth/login` | Authenticate a user and generate a JWT token |
 
 ---
 
@@ -94,9 +94,10 @@ https://localhost:5001/swagger
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/users` | Get the authenticated user's profile |
-| PUT | `/api/users` | Update the authenticated user's information |
-| PUT | `/api/users/password` | Change the authenticated user's password |
+| GET | `/api/Users` | Get the authenticated user's profile |
+| PUT | `/api/Users/me` | Update the authenticated user's information |
+| DELETE | `/api/Users/me` |  Delete the authenticated user's account |
+| PUT | `/api/Users/password` | Change the authenticated user's password |
 
 ---
 
@@ -104,11 +105,11 @@ https://localhost:5001/swagger
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/taskitem` | Get all tasks from the authenticated user |
-| POST | `/api/taskitem` | Create a new task |
-| PUT | `/api/taskitem/{id}` | Update an existing task |
-| PATCH | `/api/taskitem/{id}/complete` | Mark a task as completed |
-| DELETE | `/api/taskitem/{id}` | Delete a task |
+| GET | `/api/Taskitem` | Get all tasks from the authenticated user |
+| POST | `/api/Taskitem` | Create a new task |
+| PUT | `/api/Taskitem/{id}` | Update an existing task |
+| PATCH | `/api/Taskitem/{id}/complete` | Mark a task as completed |
+| DELETE | `/api/Taskitem/{id}` | Delete a task |
 
 ---
 
@@ -116,10 +117,10 @@ https://localhost:5001/swagger
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/tasknote/{taskItemId}` | Get all notes from a task |
-| POST | `/api/tasknote/{taskItemId}` | Create a new note for a task |
-| PUT | `/api/tasknote/{id}` | Update a task note |
-| DELETE | `/api/tasknote/{id}` | Delete a task note |
+| GET | `/api/Tasknote/{taskItemId}` | Get all notes from a task |
+| POST | `/api/Tasknote/{taskItemId}` | Create a new note for a task |
+| PUT | `/api/Tasknote/{id}` | Update a task note |
+| DELETE | `/api/Tasknote/{id}` | Delete a task note |
 
 > Protected endpoints require a valid JWT token in the `Authorization` header.
 
