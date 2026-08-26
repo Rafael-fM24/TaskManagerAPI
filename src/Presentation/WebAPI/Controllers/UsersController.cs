@@ -17,7 +17,7 @@ public class UsersController : ControllerBase
         _userService = userService ?? throw new ArgumentNullException(nameof(userService));
     }
     
-    [HttpGet]
+    [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {
         var user = await _userService.GetCurrentUserAsync();
