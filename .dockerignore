@@ -1,0 +1,42 @@
+# Build outputs
+**/bin/
+**/obj/
+**/artifacts/
+
+# IDE / user-specific files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.sln.iml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Environment / secrets
+.env
+.env.*
+.env.example
+
+# Documentation
+README.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test results
+**/TestResults/
