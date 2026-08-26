@@ -1,7 +1,11 @@
 ﻿<Solution>
   <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+    <File Path="Dockerfile" />
+    <File Path=".dockerignore" />
     <File Path="README.md" />
     <File Path=".gitignore" />
+    <File Path=".env" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Application/Application.csproj" />
