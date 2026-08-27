@@ -20,11 +20,11 @@ public class TaskItemController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult GetMyTasks()
+    public IActionResult GetMyTasks(int pageNumber, int pageQuantity)
     {
-        var tasks = _taskItemService.GetAllTasks();
-
-        return StatusCode(StatusCodes.Status201Created);
+        var tasks = _taskItemService.GetAllTasks(pageNumber, pageQuantity);
+        
+        return Ok(tasks);
     }
 
     [HttpPost]
@@ -32,7 +32,7 @@ public class TaskItemController : ControllerBase
     {
         await _taskItemService.Create(dto);
 
-        return Ok();
+        return StatusCode(StatusCodes.Status201Created);
     }
 
     [HttpPut("{id:guid}")]

@@ -22,10 +22,13 @@ public class TaskItemRepository : ITaskItemRepository
             .FirstOrDefault(t => t.Id == id);
     }
 
-    public IReadOnlyList<TaskItem> GetByUserId(Guid userId)
+    public IReadOnlyList<TaskItem> GetByUserId(Guid userId, int pageNumber, int pageQuantity)
     {
         return _context.TaskItems
             .Where(t => t.UserId == userId)
+            .OrderBy(t => t.Created)
+            .Skip(pageNumber * pageQuantity)
+            .Take(pageQuantity)
             .ToList();
     }
 

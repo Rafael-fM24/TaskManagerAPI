@@ -20,9 +20,9 @@ public class TaskNoteController : ControllerBase
     }
 
     [HttpGet("{taskItemId:guid}")]
-    public IActionResult Get(Guid taskItemId)
+    public IActionResult Get(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var notes = _taskNoteService.GetAll(taskItemId);
+        var notes = _taskNoteService.GetAll(taskItemId, pageNumber, pageQuantity);
 
         return Ok(notes);
     }

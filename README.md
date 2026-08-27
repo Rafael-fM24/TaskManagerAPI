@@ -28,6 +28,8 @@ REST API developed with ASP.NET Core for managing tasks, notes, and users, using
 * Task due dates
 * User-task association
 * Protected endpoints using JWT authentication
+* Task pagination
+* Task note pagination
 
 ## Architecture
 
@@ -225,7 +227,7 @@ Current version:
 
 | Method | Endpoint                         | Description                               |
 | ------ |----------------------------------| ----------------------------------------- |
-| GET    | `/api/v1/Taskitem`               | Get all tasks from the authenticated user |
+| GET    | `/api/v1/Taskitem?pageNumber=0&pageQuantity=5`              | Get paginated tasks from the authenticated user |
 | POST   | `/api/v1/Taskitem`               | Create a new task                         |
 | PUT    | `/api/v1/Taskitem/{id}`          | Update an existing task                   |
 | PATCH  | `/api/v1/Taskitem/{id}/complete` | Mark a task as completed                  |
@@ -235,12 +237,12 @@ Current version:
 
 ### Task Notes
 
-| Method | Endpoint                        | Description                  |
-| ------ |---------------------------------| ---------------------------- |
-| GET    | `/api/v1/Tasknote/{taskItemId}` | Get all notes from a task    |
-| POST   | `/api/v1/Tasknote/{taskItemId}` | Create a new note for a task |
-| PUT    | `/api/v1/Tasknote/{id}`         | Update a task note           |
-| DELETE | `/api/v1/Tasknote/{id}`         | Delete a task note           |
+| Method | Endpoint                        | Description                     |
+| ------ |---------------------------------|---------------------------------|
+| GET    | `/api/v1/Tasknote/{taskItemId}?pageNumber=0&pageQuantity=5` | Get paginated notes from a task |
+| POST   | `/api/v1/Tasknote/{taskItemId}` | Create a new note for a task    |
+| PUT    | `/api/v1/Tasknote/{id}`         | Update a task note              |
+| DELETE | `/api/v1/Tasknote/{id}`         | Delete a task note              |
 
 > Protected endpoints require a valid JWT token in the `Authorization` header.
 

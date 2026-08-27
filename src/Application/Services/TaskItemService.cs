@@ -20,11 +20,11 @@ public class TaskItemService : ITaskItemService
         _currentUserService = currentUserService;
     }
 
-    public IReadOnlyList<TaskItemDTO> GetAllTasks()
+    public IReadOnlyList<TaskItemDTO> GetAllTasks(int pageNumber, int pageQuantity)
     {
         var userId = _currentUserService.UserId;
         
-        var taskItems = _taskItemRepository.GetByUserId(userId);
+        var taskItems = _taskItemRepository.GetByUserId(userId, pageNumber, pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
     }

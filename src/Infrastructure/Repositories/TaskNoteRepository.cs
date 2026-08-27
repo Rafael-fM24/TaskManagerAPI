@@ -13,9 +13,14 @@ public class TaskNoteRepository :  ITaskNoteRepository
         _context =  context;
     }
 
-    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId)
+    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        return _context.TaskNotes.Where(x => x.TaskItemId == taskItemId).ToList();
+        return _context.TaskNotes
+            .Where(x => x.TaskItemId == taskItemId)
+            .OrderBy(x => x.Id)
+            .Skip(pageNumber * pageQuantity)
+            .Take(pageQuantity)
+            .ToList();
     }
 
     public void Add(TaskNote taskNote)

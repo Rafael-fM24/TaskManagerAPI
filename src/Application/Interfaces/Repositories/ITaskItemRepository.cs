@@ -5,7 +5,7 @@ namespace Application.Interfaces.Repositories;
 public interface ITaskItemRepository
 {
     TaskItem? GetById(Guid id);
-    IReadOnlyList<TaskItem> GetByUserId(Guid userId);
+    IReadOnlyList<TaskItem> GetByUserId(Guid userId, int pageNumber, int pageQuantity);
     void Add(TaskItem taskItem);
     void Update(TaskItem taskItem);
     void Remove(Guid id);

@@ -20,9 +20,9 @@ public class TaskNoteService : ITaskNoteService
         _mapper = mapper ??  throw new ArgumentNullException(nameof(mapper));
     }
 
-    public IReadOnlyList<TaskNoteDTO> GetAll(Guid taskItemId)
+    public IReadOnlyList<TaskNoteDTO> GetAll(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var notes = _taskNoteRepository.GetAllNotes(taskItemId);
+        var notes = _taskNoteRepository.GetAllNotes(taskItemId, pageNumber, pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
     }
