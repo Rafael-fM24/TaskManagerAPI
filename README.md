@@ -283,7 +283,7 @@ rather than `localhost:3307`.
 
 ## Future Improvements
 
-* Refresh tokens
-* Pagination
-* Filtering and sorting
-* Structured logging
+* Unit tests
+* Refresh token
+* Filters
+* Logs
