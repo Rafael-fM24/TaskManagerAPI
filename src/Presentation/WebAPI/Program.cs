@@ -1,12 +1,14 @@
 using System.Text;
 using Application;
 using Application.Settings;
+using Asp.Versioning.ApiExplorer;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebAPI.SwaggerConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,11 +28,7 @@ builder.Services.AddApplication();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Task Manager API",
-        Version = "v1"
-    });
+    c.OperationFilter<SwaggerDefaultValues>();
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -57,6 +55,14 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddApiVersioning()
+    .AddMvc()
+    .AddApiExplorer(setup =>
+    {
+        setup.GroupNameFormat = "'v'VVV";
+        setup.SubstituteApiVersionInUrl = true;
+    });
+builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -89,7 +95,14 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var version = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+        foreach (var description in version.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", $"Web Api - {description.GroupName.ToUpper()}");
+        }
+    });
 }
 
 app.UseHttpsRedirection();

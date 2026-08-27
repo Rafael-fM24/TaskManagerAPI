@@ -1,11 +1,13 @@
 using Application.DTOs.User;
 using Application.Interfaces.Services;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+[ApiVersion(1.0)]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;

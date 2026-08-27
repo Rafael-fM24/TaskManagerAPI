@@ -9,6 +9,7 @@ REST API developed with ASP.NET Core for managing tasks, notes, and users, using
 * Entity Framework Core
 * MySQL 8
 * JWT Authentication
+* API Versioning
 * Docker & Docker Compose
 * Swagger / OpenAPI
 * AutoMapper
@@ -189,48 +190,57 @@ dotnet restore
 dotnet run --project src/Presentation/WebAPI/WebAPI.csproj
 ```
 
+## API Versioning
+
+The API uses URL-based versioning to support future changes without
+breaking existing clients.
+
+Current version:
+
+- `v1`
+
 ## API Endpoints
 
 ### Authentication
 
-| Method | Endpoint             | Description                                  |
-| ------ | -------------------- | -------------------------------------------- |
-| POST   | `/api/Auth/register` | Register a new user                          |
-| POST   | `/api/Auth/login`    | Authenticate a user and generate a JWT token |
+| Method | Endpoint                | Description                                  |
+| ------ |-------------------------| -------------------------------------------- |
+| POST   | `/api/v1/Auth/register` | Register a new user                          |
+| POST   | `/api/v1/Auth/login`    | Authenticate a user and generate a JWT token |
 
 ---
 
 ### Users
 
-| Method | Endpoint              | Description                                 |
-| ------ |-----------------------| ------------------------------------------- |
-| GET    | `/api/Users/me`       | Get the authenticated user's profile        |
-| PUT    | `/api/Users/me`       | Update the authenticated user's information |
-| DELETE | `/api/Users/me`       | Delete the authenticated user's account     |
-| PUT    | `/api/Users/password` | Change the authenticated user's password    |
+| Method | Endpoint                 | Description                                 |
+| ------ |--------------------------| ------------------------------------------- |
+| GET    | `/api/v1/Users/me`       | Get the authenticated user's profile        |
+| PUT    | `/api/v1/Users/me`       | Update the authenticated user's information |
+| DELETE | `/api/v1/Users/me`       | Delete the authenticated user's account     |
+| PUT    | `/api/v1/Users/password` | Change the authenticated user's password    |
 
 ---
 
 ### Tasks
 
-| Method | Endpoint                      | Description                               |
-| ------ | ----------------------------- | ----------------------------------------- |
-| GET    | `/api/Taskitem`               | Get all tasks from the authenticated user |
-| POST   | `/api/Taskitem`               | Create a new task                         |
-| PUT    | `/api/Taskitem/{id}`          | Update an existing task                   |
-| PATCH  | `/api/Taskitem/{id}/complete` | Mark a task as completed                  |
-| DELETE | `/api/Taskitem/{id}`          | Delete a task                             |
+| Method | Endpoint                         | Description                               |
+| ------ |----------------------------------| ----------------------------------------- |
+| GET    | `/api/v1/Taskitem`               | Get all tasks from the authenticated user |
+| POST   | `/api/v1/Taskitem`               | Create a new task                         |
+| PUT    | `/api/v1/Taskitem/{id}`          | Update an existing task                   |
+| PATCH  | `/api/v1/Taskitem/{id}/complete` | Mark a task as completed                  |
+| DELETE | `/api/v1/Taskitem/{id}`          | Delete a task                             |
 
 ---
 
 ### Task Notes
 
-| Method | Endpoint                     | Description                  |
-| ------ | ---------------------------- | ---------------------------- |
-| GET    | `/api/Tasknote/{taskItemId}` | Get all notes from a task    |
-| POST   | `/api/Tasknote/{taskItemId}` | Create a new note for a task |
-| PUT    | `/api/Tasknote/{id}`         | Update a task note           |
-| DELETE | `/api/Tasknote/{id}`         | Delete a task note           |
+| Method | Endpoint                        | Description                  |
+| ------ |---------------------------------| ---------------------------- |
+| GET    | `/api/v1/Tasknote/{taskItemId}` | Get all notes from a task    |
+| POST   | `/api/v1/Tasknote/{taskItemId}` | Create a new note for a task |
+| PUT    | `/api/v1/Tasknote/{id}`         | Update a task note           |
+| DELETE | `/api/v1/Tasknote/{id}`         | Delete a task note           |
 
 > Protected endpoints require a valid JWT token in the `Authorization` header.
 

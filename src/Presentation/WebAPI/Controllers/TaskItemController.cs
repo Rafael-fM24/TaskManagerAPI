@@ -1,13 +1,15 @@
 using Application.DTOs.TaskItem;
 using Application.Interfaces.Services;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+[ApiVersion(1.0)]
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class TaskItemController : ControllerBase
 {
     private readonly ITaskItemService _taskItemService;
@@ -22,7 +24,7 @@ public class TaskItemController : ControllerBase
     {
         var tasks = _taskItemService.GetAllTasks();
 
-        return Ok(tasks);
+        return StatusCode(StatusCodes.Status201Created);
     }
 
     [HttpPost]
