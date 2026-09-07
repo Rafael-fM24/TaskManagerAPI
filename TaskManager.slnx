@@ -13,4 +13,7 @@
     <Project Path="src/Infrastructure/Infrastructure.csproj" />
     <Project Path="src/Presentation/WebAPI/WebAPI.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Domain.UnitTest/Domain.UnitTest.csproj" />
+  </Folder>
 </Solution>

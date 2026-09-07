@@ -36,7 +36,7 @@ public class TaskItem
     public TaskItem(Guid userId,
         string title, 
         string description, 
-        DateTime dueDate, 
+        DateTime? dueDate, 
         PriorityLevel priority)
     {
         ValidatePriority(priority);
@@ -47,21 +47,21 @@ public class TaskItem
         Description = description;
         Completed = false;
         Created = DateTime.UtcNow;
-        DueDate = dueDate.Date;
+        DueDate = dueDate?.Date;
         Priority = priority;
     }
     
     public void Update(
         string title,
         string description,
-        DateTime dueDate,
+        DateTime? dueDate,
         PriorityLevel priority)
     {
         ValidatePriority(priority);
         
         Title = title;
         Description = description;
-        DueDate = dueDate.Date;
+        DueDate = dueDate?.Date;
         Priority = priority;
     }
     
