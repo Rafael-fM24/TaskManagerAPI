@@ -4,7 +4,7 @@ using Domain.Exceptions;
 
 namespace Domain.UnitTest.Entities;
 
-public class TaskItemTest
+public class TaskItemTests
 {
     private readonly TaskItem _taskItem = new(
         Guid.NewGuid(),

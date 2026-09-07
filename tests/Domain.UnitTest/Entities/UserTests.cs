@@ -2,7 +2,7 @@ using Domain.Entities;
 
 namespace Domain.UnitTest.Entities;
 
-public class UserTest
+public class UserTests
 {
     private readonly User _user = new(
         "Username", 
@@ -10,7 +10,7 @@ public class UserTest
         "Password593");
     
     [Fact]
-    public void Constructor_ShouldInitializeTaskProperties()
+    public void Constructor_ShouldInitializeProperties()
     {
         // Arrange
         var userName = "User";
@@ -77,7 +77,7 @@ public class UserTest
     {
         // Arrange
         var userName = "NewUser";
-        var originalEmail = _user.Username;
+        var originalEmail = _user.Email;
         
         // Act
         _user.Update(userName, _user.Username);
