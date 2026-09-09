@@ -33,7 +33,7 @@ public class UsersController : ControllerBase
     [HttpPut("me")]
     public async Task<IActionResult> UpdateAsync(UpdateUserDTO dto)
     {
-        await _userService.Update(dto);
+        await _userService.UpdateAsync(dto);
         
         return NoContent();
     }
@@ -50,7 +50,7 @@ public class UsersController : ControllerBase
     [HttpDelete("me")]
     public async Task<IActionResult> DeleteAsync()
     {
-        await _userService.Delete();
+        await _userService.DeleteAsync();
         
         return NoContent();
     }

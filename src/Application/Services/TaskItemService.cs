@@ -20,16 +20,16 @@ public class TaskItemService : ITaskItemService
         _currentUserService = currentUserService;
     }
 
-    public IReadOnlyList<TaskItemDTO> GetAllTasks(int pageNumber, int pageQuantity)
+    public async Task<IReadOnlyList<TaskItemDTO>> GetAllTasksAsync(int pageNumber, int pageQuantity)
     {
         var userId = _currentUserService.UserId;
         
-        var taskItems = _taskItemRepository.GetByUserId(userId, pageNumber, pageQuantity);
+        var taskItems = await _taskItemRepository.GetByUserIdAsync(userId, pageNumber, pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
     }
 
-    public async Task Create(CreateTaskItemDTO dto)
+    public async Task CreateAsync(CreateTaskItemDTO dto)
     {
         var user = _currentUserService.UserId;
 
@@ -41,42 +41,45 @@ public class TaskItemService : ITaskItemService
             dto.Priority);
         
         _taskItemRepository.Add(taskItem);
-        _taskItemRepository.Save();
+        await _taskItemRepository.SaveAsync();
     }
 
-    public void Update(Guid id, UpdateTaskItemDTO dto)
+    public async Task UpdateAsync(Guid id, UpdateTaskItemDTO dto)
     {
-        var task = _taskItemRepository.GetById(id);
-
-        if (task == null)
-            throw new Exception("Task not found.");
-
-        task.Update(
+        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        
+        if (taskItem == null)
+            throw new NotFoundException("TaskItem not found");
+        
+        taskItem.Update(
             dto.Title,
             dto.Description,
             dto.DueDate,
             dto.Priority);
-
-        _taskItemRepository.Update(task);
-        _taskItemRepository.Save();
+        
+        await _taskItemRepository.SaveAsync();
     }
 
-    public void Complete(Guid id)
+    public async Task CompletedAsync(Guid id)
     {
-        var task = _taskItemRepository.GetById(id);
-
-        if (task == null)
-            throw new DomainException("Tarefa não encontrada.");
-
-        task.Complete();
-
-        _taskItemRepository.Update(task);
-        _taskItemRepository.Save();
+        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        
+        if (taskItem == null)
+            throw new NotFoundException("TaskItem not found");
+        
+        taskItem.Complete();
+        
+        await _taskItemRepository.SaveAsync();
     }
 
-    public void Delete(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _taskItemRepository.Remove(id);
-        _taskItemRepository.Save();
+        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        
+        if (taskItem == null)
+            throw new NotFoundException("TaskItem not found");
+        
+        _taskItemRepository.Remove(taskItem);
+        await _taskItemRepository.SaveAsync();
     }
 }

@@ -1,6 +1,5 @@
 using Application.Interfaces.Repositories;
 using Domain.Entities;
-using Domain.Enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,45 +14,36 @@ public class TaskItemRepository : ITaskItemRepository
         _context = context;
     }
 
-    public TaskItem? GetById(Guid id)
+    public async Task<TaskItem?> GetByIdAsync(Guid id)
     {
-        return _context.TaskItems
+        return await _context.TaskItems
             .Include(t => t.Notes)
-            .FirstOrDefault(t => t.Id == id);
+            .FirstOrDefaultAsync(t => t.Id == id);
     }
 
-    public IReadOnlyList<TaskItem> GetByUserId(Guid userId, int pageNumber, int pageQuantity)
+    public async Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(Guid userId, int pageNumber, int pageQuantity)
     {
-        return _context.TaskItems
+        return await _context.TaskItems
             .Where(t => t.UserId == userId)
             .OrderBy(t => t.Created)
             .Skip(pageNumber * pageQuantity)
             .Take(pageQuantity)
-            .ToList();
+            .ToListAsync();
     }
 
     public void Add(TaskItem taskItem)
     {
         _context.TaskItems.Add(taskItem);
     }
-
-    public void Update(TaskItem taskItem)
+    
+    
+    public void Remove(TaskItem taskItem)
     {
-        _context.TaskItems.Update(taskItem);
-    }
-
-    public void Remove(Guid id)
-    {
-        var taskItem = _context.TaskItems.Find(id);
-        
-        if (taskItem == null)
-            throw new Exception("TaskItem not found");
-        
         _context.TaskItems.Remove(taskItem);
     }
 
-    public void Save()
+    public async Task SaveAsync()
     {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

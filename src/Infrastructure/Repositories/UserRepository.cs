@@ -25,27 +25,14 @@ public class UserRepository : IUserRepository
         return await _context.Users.FindAsync(id);
     }
 
-    public async Task AddAsync(User user)
+    public void Add(User user)
     {
-        await _context.Users.AddAsync(user);
+        _context.Users.Add(user);
     }
 
-    public async Task UpdateAsync(Guid id, string name, string email)
+    public void RemoveUser(User user)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
-            throw new Exception("User not found");
-
-        user.Update(name, email);
-    }
-
-    public async Task DeleteUserIdAsync(Guid id)
-    {
-        var user = await _context.Users.FindAsync(id);
-        
-        if (user is not null)
-            _context.Users.Remove(user);
+        _context.Users.Remove(user);
     }
 
     public async Task SaveAsync()

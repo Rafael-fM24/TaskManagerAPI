@@ -20,9 +20,9 @@ public class TaskItemController : ControllerBase
     }
     
     [HttpGet]
-    public IActionResult GetMyTasks(int pageNumber, int pageQuantity)
+    public async Task<IActionResult> GetMyTasks(int pageNumber, int pageQuantity)
     {
-        var tasks = _taskItemService.GetAllTasks(pageNumber, pageQuantity);
+        var tasks = await _taskItemService.GetAllTasksAsync(pageNumber, pageQuantity);
         
         return Ok(tasks);
     }
@@ -30,31 +30,31 @@ public class TaskItemController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post(CreateTaskItemDTO dto)
     {
-        await _taskItemService.Create(dto);
+        await _taskItemService.CreateAsync(dto);
 
         return StatusCode(StatusCodes.Status201Created);
     }
 
     [HttpPut("{id:guid}")]
-    public IActionResult Put(Guid id, UpdateTaskItemDTO dto)
+    public async Task<IActionResult> Put(Guid id, UpdateTaskItemDTO dto)
     {
-        _taskItemService.Update(id, dto);
+        await _taskItemService.UpdateAsync(id, dto);
 
         return NoContent();
     }
     
     [HttpPatch("{id:guid}/complete")]
-    public IActionResult Complete(Guid id)
+    public async Task<IActionResult> Complete(Guid id)
     {
-        _taskItemService.Complete(id);
+        await _taskItemService.CompletedAsync(id);
 
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        _taskItemService.Delete(id);
+        await _taskItemService.DeleteAsync(id);
 
         return NoContent();
     }

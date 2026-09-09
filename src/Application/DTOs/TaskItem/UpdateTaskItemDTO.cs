@@ -13,7 +13,7 @@ public class UpdateTaskItemDTO
     [MaxLength(100)]
     public string Description { get; init; } = string.Empty;
     
-    public DateTime DueDate { get; init; }
+    public DateTime? DueDate { get; init; }
     
     public PriorityLevel Priority { get; init; }
 }

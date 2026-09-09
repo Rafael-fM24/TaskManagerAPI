@@ -20,33 +20,33 @@ public class TaskNoteController : ControllerBase
     }
 
     [HttpGet("{taskItemId:guid}")]
-    public IActionResult Get(Guid taskItemId, int pageNumber, int pageQuantity)
+    public async Task<IActionResult> Get(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var notes = _taskNoteService.GetAll(taskItemId, pageNumber, pageQuantity);
+        var notes = await _taskNoteService.GetAllAsync(taskItemId, pageNumber, pageQuantity);
 
         return Ok(notes);
     }
     
     [HttpPost("{taskItemId:guid}")]
-    public IActionResult Post(Guid taskItemId, CreateTaskNoteDTO dto)
+    public async Task<IActionResult> Post(Guid taskItemId, CreateTaskNoteDTO dto)
     {
-        _taskNoteService.Create(taskItemId, dto);
+        await _taskNoteService.CreateAsync(taskItemId, dto);
 
         return StatusCode(StatusCodes.Status201Created);
     }
 
     [HttpPut("{id:int}")]
-    public IActionResult Put(int id, UpdateTaskNoteDTO dto)
+    public async Task<IActionResult> Put(int id, UpdateTaskNoteDTO dto)
     {
-        _taskNoteService.Update(id, dto);
+        await _taskNoteService.UpdateAsync(id, dto);
 
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _taskNoteService.Delete(id);
+        await _taskNoteService.DeleteAsync(id);
         
         return NoContent();
     }

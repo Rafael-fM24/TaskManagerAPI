@@ -1,6 +1,8 @@
+using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
@@ -13,43 +15,34 @@ public class TaskNoteRepository :  ITaskNoteRepository
         _context =  context;
     }
 
-    public IReadOnlyList<TaskNote> GetAllNotes(Guid taskItemId, int pageNumber, int pageQuantity)
+    public async Task<TaskNote?> GetByIdAsync(int id)
     {
-        return _context.TaskNotes
+        return await _context.TaskNotes
+            .FirstOrDefaultAsync(n => n.Id == id);
+    }
+
+    public async Task<IReadOnlyList<TaskNote>> GetAllNotesAsync(Guid taskItemId, int pageNumber, int pageQuantity)
+    {
+        return await _context.TaskNotes
             .Where(x => x.TaskItemId == taskItemId)
             .OrderBy(x => x.Id)
             .Skip(pageNumber * pageQuantity)
             .Take(pageQuantity)
-            .ToList();
+            .ToListAsync();
     }
 
     public void Add(TaskNote taskNote)
-    {
+    { 
         _context.TaskNotes.Add(taskNote);
     }
 
-    public void Remove(int id)
+    public void Remove(TaskNote taskNote)
     {
-        var taskNote = _context.TaskNotes.Find(id);
-
-        if (taskNote == null)
-            throw new Exception("TaskNote not found");
-        
         _context.TaskNotes.Remove(taskNote);
     }
 
-    public void Update(int id, string note)
+    public async Task SaveAsync()
     {
-        var taskNote =  _context.TaskNotes.Find(id);
-        
-        if (taskNote == null)
-            throw new Exception("TaskNote not found");
-        
-        taskNote.Update(note);
-    }
-
-    public void Save()
-    {
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

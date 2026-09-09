@@ -4,6 +4,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Application.Services;
 
@@ -20,35 +21,46 @@ public class TaskNoteService : ITaskNoteService
         _mapper = mapper ??  throw new ArgumentNullException(nameof(mapper));
     }
 
-    public IReadOnlyList<TaskNoteDTO> GetAll(Guid taskItemId, int pageNumber, int pageQuantity)
+    public async Task<IReadOnlyList<TaskNoteDTO>> GetAllAsync(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var notes = _taskNoteRepository.GetAllNotes(taskItemId, pageNumber, pageQuantity);
+        var notes = await _taskNoteRepository.GetAllNotesAsync(taskItemId, pageNumber, pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
     }
 
-    public void Create(Guid taskItemId, CreateTaskNoteDTO dto)
+    public async Task CreateAsync(Guid taskItemId, CreateTaskNoteDTO dto)
     {
-        var task = _taskItemRepository.GetById(taskItemId);
+        var task = await _taskItemRepository.GetByIdAsync(taskItemId);
 
         if (task == null)
-            throw new Exception("Task not found");
+            throw new NotFoundException("Task not found");
 
         var note = new TaskNote(taskItemId, dto.Note);
 
         _taskNoteRepository.Add(note);
-        _taskNoteRepository.Save();
+        await _taskNoteRepository.SaveAsync();
     }
 
-    public void Delete(int id)
+    public async Task DeleteAsync(int id)
     {
-        _taskNoteRepository.Remove(id);
-        _taskNoteRepository.Save();
+        var note = await _taskNoteRepository.GetByIdAsync(id);
+
+        if (note == null)
+            throw new NotFoundException("Task not found");
+        
+        _taskNoteRepository.Remove(note);
+        await _taskNoteRepository.SaveAsync();
     }
 
-    public void Update(int id, UpdateTaskNoteDTO dto)
+    public async Task UpdateAsync(int id, UpdateTaskNoteDTO dto)
     {
-        _taskNoteRepository.Update(id, dto.Note);
-        _taskNoteRepository.Save();
+        var note = await _taskNoteRepository.GetByIdAsync(id);
+
+        if (note == null)
+            throw new NotFoundException("Task not found");
+        
+        note.Update(dto.Note);
+        
+        await _taskNoteRepository.SaveAsync();
     }
 }

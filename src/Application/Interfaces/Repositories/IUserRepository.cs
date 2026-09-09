@@ -8,11 +8,9 @@ public interface IUserRepository
 
     Task<User?> GetByIdAsync(Guid id);
     
-    Task AddAsync(User user);
-
-    Task UpdateAsync(Guid id, string user, string email);
+    void Add(User user);
     
-    Task DeleteUserIdAsync(Guid id);
+    void RemoveUser(User user);
 
     Task SaveAsync();
 }

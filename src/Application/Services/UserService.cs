@@ -37,8 +37,9 @@ public class UserService : IUserService
             dto.Email,
             passwordHash
         );
-
-        await _userRepository.AddAsync(user);
+        
+        _userRepository.Add(user);
+        
         await _userRepository.SaveAsync();
     }
 
@@ -66,30 +67,35 @@ public class UserService : IUserService
 
         var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null)
-            return null;
+        if(user == null)
+            throw new NotFoundException("User not found");
 
         return _mapper.Map<UserDTO>(user);
     }
 
-    public async Task Update(UpdateUserDTO dto)
+    public async Task UpdateAsync(UpdateUserDTO dto)
     {
-        var user = _currentUserService.UserId;
+        var userid = _currentUserService.UserId;
+        var user = await _userRepository.GetByIdAsync(userid);
+
+        if(user == null)
+            throw new NotFoundException("User not found");
         
-        await _userRepository.UpdateAsync(user,dto.Username, dto.Email);
+        user.Update(dto.Username, dto.Email);
+        
         await _userRepository.SaveAsync();
     }
 
-    public async Task Delete()
+    public async Task DeleteAsync()
     {
         var userId = _currentUserService.UserId;
 
         var user = await _userRepository.GetByIdAsync(userId);
-
-        if (user is null)
-            throw new NotFoundException("User not found.");
         
-        await _userRepository.DeleteUserIdAsync(userId);
+        if(user == null)
+            throw new NotFoundException("User not found");
+        
+        _userRepository.RemoveUser(user);
         await _userRepository.SaveAsync();
     }
 
@@ -100,7 +106,7 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(userId);
 
         if (user == null)
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
 
         if (!_passwordHasher.Verify(dto.CurrentPassword, user.PasswordHash))
             throw new Exception("Incorrect current password");
