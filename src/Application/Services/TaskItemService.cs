@@ -46,7 +46,9 @@ public class TaskItemService : ITaskItemService
 
     public async Task UpdateAsync(Guid id, UpdateTaskItemDTO dto)
     {
-        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        var userId = _currentUserService.UserId;
+        
+        var taskItem = await _taskItemRepository.GetByIdAsync(id, userId);
         
         if (taskItem == null)
             throw new NotFoundException("TaskItem not found");
@@ -62,7 +64,9 @@ public class TaskItemService : ITaskItemService
 
     public async Task CompletedAsync(Guid id)
     {
-        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        var userId = _currentUserService.UserId;
+        
+        var taskItem = await _taskItemRepository.GetByIdAsync(id, userId);
         
         if (taskItem == null)
             throw new NotFoundException("TaskItem not found");
@@ -74,7 +78,9 @@ public class TaskItemService : ITaskItemService
 
     public async Task DeleteAsync(Guid id)
     {
-        var taskItem = await _taskItemRepository.GetByIdAsync(id);
+        var userId = _currentUserService.UserId;
+        
+        var taskItem = await _taskItemRepository.GetByIdAsync(id, userId);
         
         if (taskItem == null)
             throw new NotFoundException("TaskItem not found");

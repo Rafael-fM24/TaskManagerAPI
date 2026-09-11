@@ -11,7 +11,6 @@ public class DomainToDTOMapping :  Profile
     public DomainToDTOMapping()
     {
         CreateMap<TaskItem, TaskItemDTO>();
-        CreateMap<CreateTaskItemDTO, TaskItem>();
 
         CreateMap<TaskNote, TaskNoteDTO>();
 

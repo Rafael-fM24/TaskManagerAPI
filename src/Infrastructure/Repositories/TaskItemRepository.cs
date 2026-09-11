@@ -14,11 +14,13 @@ public class TaskItemRepository : ITaskItemRepository
         _context = context;
     }
 
-    public async Task<TaskItem?> GetByIdAsync(Guid id)
+    public async Task<TaskItem?> GetByIdAsync(Guid id, Guid userId)
     {
         return await _context.TaskItems
             .Include(t => t.Notes)
-            .FirstOrDefaultAsync(t => t.Id == id);
+            .FirstOrDefaultAsync(t => 
+                t.Id == id &&
+                t.UserId == userId);
     }
 
     public async Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(Guid userId, int pageNumber, int pageQuantity)

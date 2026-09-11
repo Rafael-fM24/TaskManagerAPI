@@ -5,7 +5,7 @@ namespace Application.Interfaces.Repositories;
 
 public interface ITaskItemRepository
 {
-    Task<TaskItem?> GetByIdAsync(Guid id);
+    Task<TaskItem?> GetByIdAsync(Guid id, Guid userId);
     
     Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(Guid userId, int pageNumber, int pageQuantity);
     

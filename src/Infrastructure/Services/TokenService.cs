@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Application.Interfaces;
 using Application.Interfaces.Services;
 using Application.Settings;
 using Domain.Entities;
