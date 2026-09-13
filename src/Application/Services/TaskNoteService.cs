@@ -13,6 +13,8 @@ public class TaskNoteService : ITaskNoteService
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly ICurrentUserService _currentUserService;
     private readonly IMapper _mapper;
+    
+    private Guid UserId => _currentUserService.UserId;
 
     public TaskNoteService(ITaskNoteRepository taskNoteRepository, ITaskItemRepository taskItemRepository, ICurrentUserService currentUserService,IMapper mapper)
     {
@@ -24,9 +26,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task<IReadOnlyList<TaskNoteDTO>> GetAllAsync(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var userId = _currentUserService.UserId;
-
-        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, userId);
+        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
 
         if (taskItem == null)
             throw new NotFoundException("TaskItem not found");
@@ -41,9 +41,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task CreateAsync(Guid taskItemId, CreateTaskNoteDTO dto)
     {
-        var userId = _currentUserService.UserId;
-        
-        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, userId);
+        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
 
         if (taskItem == null)
             throw new NotFoundException("TaskNote not found");
@@ -56,9 +54,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task DeleteAsync(int id)
     {
-        var userId = _currentUserService.UserId;
-        
-        var note = await _taskNoteRepository.GetByIdAsync(id, userId);
+        var note = await _taskNoteRepository.GetByIdAsync(id, UserId);
 
         if (note == null)
             throw new NotFoundException("TaskNote not found");
@@ -69,9 +65,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task UpdateAsync(int id, UpdateTaskNoteDTO dto)
     {
-        var userId = _currentUserService.UserId;
-        
-        var note = await _taskNoteRepository.GetByIdAsync(id, userId);
+        var note = await _taskNoteRepository.GetByIdAsync(id, UserId);
 
         if (note == null)
             throw new NotFoundException("TaskNote not found");
