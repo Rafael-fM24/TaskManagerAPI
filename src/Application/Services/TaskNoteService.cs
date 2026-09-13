@@ -24,8 +24,17 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task<IReadOnlyList<TaskNoteDTO>> GetAllAsync(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var notes = 
-            await _taskNoteRepository.GetAllNotesAsync(taskItemId, pageNumber, pageQuantity);
+        var userId = _currentUserService.UserId;
+
+        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, userId);
+
+        if (taskItem == null)
+            throw new NotFoundException("TaskItem not found");
+
+        var notes = await _taskNoteRepository.GetAllNotesAsync(
+            taskItemId,
+            pageNumber,
+            pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
     }
@@ -34,9 +43,9 @@ public class TaskNoteService : ITaskNoteService
     {
         var userId = _currentUserService.UserId;
         
-        var task = await _taskItemRepository.GetByIdAsync(taskItemId, userId);
+        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, userId);
 
-        if (task == null)
+        if (taskItem == null)
             throw new NotFoundException("TaskNote not found");
 
         var note = new TaskNote(taskItemId, dto.Note);
@@ -47,7 +56,9 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task DeleteAsync(int id)
     {
-        var note = await _taskNoteRepository.GetByIdAsync(id);
+        var userId = _currentUserService.UserId;
+        
+        var note = await _taskNoteRepository.GetByIdAsync(id, userId);
 
         if (note == null)
             throw new NotFoundException("TaskNote not found");
@@ -58,7 +69,9 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task UpdateAsync(int id, UpdateTaskNoteDTO dto)
     {
-        var note = await _taskNoteRepository.GetByIdAsync(id);
+        var userId = _currentUserService.UserId;
+        
+        var note = await _taskNoteRepository.GetByIdAsync(id, userId);
 
         if (note == null)
             throw new NotFoundException("TaskNote not found");

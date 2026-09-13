@@ -15,10 +15,14 @@ public class TaskNoteRepository :  ITaskNoteRepository
         _context =  context;
     }
 
-    public async Task<TaskNote?> GetByIdAsync(int id)
+    public async Task<TaskNote?> GetByIdAsync(int id, Guid userId)
     {
         return await _context.TaskNotes
-            .FirstOrDefaultAsync(n => n.Id == id);
+            .FirstOrDefaultAsync(n =>
+                n.Id == id &&
+                _context.TaskItems.Any(t =>
+                    t.Id == n.TaskItemId &&
+                    t.UserId == userId));
     }
 
     public async Task<IReadOnlyList<TaskNote>> GetAllNotesAsync(Guid taskItemId, int pageNumber, int pageQuantity)
