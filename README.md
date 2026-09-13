@@ -280,10 +280,3 @@ mysql:3306
 ```
 
 rather than `localhost:3307`.
-
-## Future Improvements
-
-* Unit tests
-* Refresh token
-* Filters
-* Logs
