@@ -28,6 +28,10 @@ public class TaskNoteServiceTests
     
     public TaskNoteServiceTests()
     {
+        _currentUserServiceMock
+            .Setup(x => x.UserId)
+            .Returns(_taskItem.UserId);
+        
         _taskNotes =
         [
             new TaskNote(_taskItem.Id, "Note1"),
@@ -86,10 +90,6 @@ public class TaskNoteServiceTests
         {
             Note = "Note"
         };
-
-        _currentUserServiceMock
-            .Setup(x => x.UserId)
-            .Returns(_taskItem.UserId);
         
         _taskItemRepositoryMock
             .Setup(x => x.GetByIdAsync(_taskItem.Id, _taskItem.UserId))
@@ -117,10 +117,6 @@ public class TaskNoteServiceTests
         // Assert
         var taskItemId = Guid.NewGuid();
         
-        _currentUserServiceMock
-            .Setup(x => x.UserId)
-            .Returns(_taskItem.UserId);
-        
         _taskItemRepositoryMock
             .Setup(x => x.GetByIdAsync(taskItemId, _taskItem.UserId))
             .ReturnsAsync((TaskItem?)null);
@@ -147,9 +143,9 @@ public class TaskNoteServiceTests
         {
             Note = "NoteUpdate"
         };
-        
+
         _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskNotes[0].Id))
+            .Setup(x => x.GetByIdAsync(_taskNotes[0].Id, _taskItem.UserId))
             .ReturnsAsync(_taskNotes[0]);
         
         var service = CreateTaskNoteService();
@@ -172,7 +168,7 @@ public class TaskNoteServiceTests
         var taskNoteId = 9;
         
         _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(taskNoteId))
+            .Setup(x => x.GetByIdAsync(taskNoteId, _taskItem.UserId))
             .ReturnsAsync((TaskNote?)null);
         
         var service = CreateTaskNoteService();
@@ -194,7 +190,7 @@ public class TaskNoteServiceTests
     {
         // Arrange
         _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskNotes[1].Id))
+            .Setup(x => x.GetByIdAsync(_taskNotes[1].Id, _taskItem.UserId))
             .ReturnsAsync(_taskNotes[1]);
         
         var service = CreateTaskNoteService();
@@ -218,8 +214,8 @@ public class TaskNoteServiceTests
         // Arrange
         var taskNoteId = 9;
         
-        _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(taskNoteId))
+       _taskNoteRepositoryMock
+            .Setup(x => x.GetByIdAsync(taskNoteId,  _taskItem.UserId))
             .ReturnsAsync((TaskNote?)null);
         
         var service = CreateTaskNoteService();
