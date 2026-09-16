@@ -1,5 +1,4 @@
 using Application.DTOs.User;
-using Application.Interfaces;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;

@@ -1,4 +1,3 @@
-using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Domain.Entities;
 using Infrastructure.Data;

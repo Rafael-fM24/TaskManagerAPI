@@ -3,7 +3,6 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Enums;
 using Domain.Exceptions;
 
 namespace Application.Services;
