@@ -59,6 +59,10 @@ public class TaskNoteServiceTests
             new()
         };
         
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, _taskItem.UserId))
+            .ReturnsAsync(_taskItem);
+        
         _taskNoteRepositoryMock
             .Setup(x => x.GetAllNotesAsync(_taskItem.Id, 0, 5))
             .ReturnsAsync(_taskNotes);

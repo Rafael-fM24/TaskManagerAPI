@@ -35,7 +35,7 @@ public class TaskItemTests
         Assert.Equal(userId, task.UserId);
         Assert.Equal(title, task.Title);
         Assert.Equal(description, task.Description);
-        Assert.False(task.Completed);
+        Assert.False(task.Status == Status.Pending);
         Assert.Equal(dueDate.Date, task.DueDate);
         Assert.Equal(priority, task.Priority);
     }
@@ -62,7 +62,7 @@ public class TaskItemTests
         Assert.Equal(userId, task.UserId);
         Assert.Equal(title, task.Title);
         Assert.Equal(description, task.Description);
-        Assert.False(task.Completed);
+        Assert.False(task.Status == Status.Pending);
         Assert.Null(task.DueDate);
         Assert.Equal(priority, task.Priority);
     }
@@ -145,6 +145,6 @@ public class TaskItemTests
         _taskItem.Complete();
         
         // Assert
-        Assert.True(_taskItem.Completed);
+        Assert.True(_taskItem.Status == Status.Completed);
     }
 }

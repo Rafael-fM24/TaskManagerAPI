@@ -203,28 +203,74 @@ public class TaskItemServiceTests
     }
 
     [Fact]
-    public async Task CompleteAsync_ShouldCompleteTask()
+    public async Task InProgressAsync_ShouldSetTaskAsInProgressAndSave()
     {
         // Arrange
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItems[0].Id, _userId))
+            .ReturnsAsync(_taskItems[0]);
+        
+        var service = CreateService();
+
+        // Act
+        await service.InProgressAsync(_taskItems[0].Id);
+        
+        // Assert
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(), 
+            Times.Once);
+        
+        Assert.Equal(Status.InProgress, _taskItems[0].Status);
+    }
+    
+    [Fact]
+    public async Task InProgressAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
+    {
+        var taskItemId = Guid.NewGuid();
+        
+        // Arrange
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(taskItemId, _userId))
+            .ReturnsAsync((TaskItem?)null);
+        
+        var service = CreateService();
+
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(
+            () => service.InProgressAsync(taskItemId));
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(), 
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task CompletedAsync_ShouldSetTaskCompleteAndSave()
+    {
+        // Arrange
+        _taskItems[1].InProgress();
+
+        Assert.Equal(Status.InProgress, _taskItems[1].Status);
+
         _taskItemRepositoryMock
             .Setup(x => x.GetByIdAsync(_taskItems[1].Id, _userId))
             .ReturnsAsync(_taskItems[1]);
 
         var service = CreateService();
-        
-        //Act
+
+        // Act
         await service.CompletedAsync(_taskItems[1].Id);
-        
+
         // Assert
+        Assert.Equal(Status.Completed, _taskItems[1].Status);
+
         _taskItemRepositoryMock.Verify(
             x => x.SaveAsync(),
             Times.Once);
-        
-        Assert.True(_taskItems[1].Completed);
     }
-
+    
     [Fact]
-    public async Task CompleteAsync_WhenTaskNotFound_ShouldThrowNotFoundException()
+    public async Task CompletedAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
     {
         // Arrange
         var taskItemId = Guid.NewGuid();
@@ -234,11 +280,11 @@ public class TaskItemServiceTests
             .ReturnsAsync((TaskItem?)null);
 
         var service = CreateService();
-        
-        //Act && Assert
+
+        // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-        () => service.CompletedAsync(taskItemId));
-        
+            () => service.CompletedAsync(taskItemId));
+
         _taskItemRepositoryMock.Verify(
             x => x.SaveAsync(),
             Times.Never);
@@ -255,7 +301,6 @@ public class TaskItemServiceTests
         var service = CreateService();
         
         // Act
-        
         await service.DeleteAsync(_taskItems[1].Id);
 
         // Assert
