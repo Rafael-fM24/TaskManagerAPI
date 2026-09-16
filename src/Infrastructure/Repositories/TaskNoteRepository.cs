@@ -34,6 +34,15 @@ public class TaskNoteRepository :  ITaskNoteRepository
             .Take(pageQuantity)
             .ToListAsync();
     }
+    
+    public async Task<bool> AllNotesDoneAsync(Guid taskItemId, int currentNoteId)
+    {
+        return !await _context.TaskNotes
+            .AnyAsync(n =>
+                n.TaskItemId == taskItemId &&
+                n.Id != currentNoteId &&
+                !n.Done);
+    }
 
     public void Add(TaskNote taskNote)
     { 

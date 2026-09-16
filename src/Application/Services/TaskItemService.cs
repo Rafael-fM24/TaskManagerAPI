@@ -10,6 +10,7 @@ namespace Application.Services;
 public class TaskItemService : ITaskItemService
 {
     private readonly ITaskItemRepository _taskItemRepository;
+    private readonly ITaskNoteRepository _taskNoteRepository;
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
     
@@ -25,9 +26,13 @@ public class TaskItemService : ITaskItemService
         return taskItem;
     }
 
-    public TaskItemService(ITaskItemRepository taskItemRepository, IMapper mapper, ICurrentUserService currentUserService)
+    public TaskItemService(ITaskItemRepository taskItemRepository, 
+        ITaskNoteRepository taskNoteRepository,
+        IMapper mapper, 
+        ICurrentUserService currentUserService)
     {
         _taskItemRepository = taskItemRepository;
+        _taskNoteRepository = taskNoteRepository;
         _mapper = mapper;
         _currentUserService = currentUserService;
     }
@@ -64,6 +69,15 @@ public class TaskItemService : ITaskItemService
         
         await _taskItemRepository.SaveAsync();
     }
+    
+    public async Task InProgressAsync(Guid id)
+    {
+        var taskItem = await GetTaskItemAsync(id);
+        
+        taskItem.InProgress();
+        
+        await _taskItemRepository.SaveAsync();
+    }
 
     public async Task CompletedAsync(Guid id)
     {
@@ -73,7 +87,7 @@ public class TaskItemService : ITaskItemService
         
         await _taskItemRepository.SaveAsync();
     }
-
+    
     public async Task DeleteAsync(Guid id)
     {
         var taskItem = await GetTaskItemAsync(id);

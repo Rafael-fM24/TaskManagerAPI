@@ -3,6 +3,7 @@ using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 
 namespace Application.Services;
@@ -16,6 +17,26 @@ public class TaskNoteService : ITaskNoteService
     
     private Guid UserId => _currentUserService.UserId;
 
+    private async Task<TaskNote> GetTaskNoteAsync(int id)
+    {
+        var taskNote = await _taskNoteRepository.GetByIdAsync(id, UserId);
+
+        if (taskNote is null)
+            throw new NotFoundException("TaskNote not found.");
+
+        return taskNote;
+    }
+    
+    private async Task<TaskItem> GetTaskItemAsync(Guid id)
+    {
+        var taskItem = await _taskItemRepository.GetByIdAsync(id, UserId);
+
+        if (taskItem == null)
+            throw new NotFoundException("TaskItem not found");
+
+        return taskItem;
+    }
+
     public TaskNoteService(ITaskNoteRepository taskNoteRepository, ITaskItemRepository taskItemRepository, ICurrentUserService currentUserService,IMapper mapper)
     {
         _taskNoteRepository = taskNoteRepository ?? throw new ArgumentNullException(nameof(taskNoteRepository));
@@ -26,10 +47,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task<IReadOnlyList<TaskNoteDTO>> GetAllAsync(Guid taskItemId, int pageNumber, int pageQuantity)
     {
-        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
-
-        if (taskItem == null)
-            throw new NotFoundException("TaskItem not found");
+        await GetTaskItemAsync(taskItemId);
 
         var notes = await _taskNoteRepository.GetAllNotesAsync(
             taskItemId,
@@ -41,10 +59,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task CreateAsync(Guid taskItemId, CreateTaskNoteDTO dto)
     {
-        var taskItem = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
-
-        if (taskItem == null)
-            throw new NotFoundException("TaskNote not found");
+        await GetTaskItemAsync(taskItemId);
 
         var note = new TaskNote(taskItemId, dto.Note);
 
@@ -54,10 +69,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task DeleteAsync(int id)
     {
-        var note = await _taskNoteRepository.GetByIdAsync(id, UserId);
-
-        if (note == null)
-            throw new NotFoundException("TaskNote not found");
+        var note = await GetTaskNoteAsync(id);
         
         _taskNoteRepository.Remove(note);
         await _taskNoteRepository.SaveAsync();
@@ -65,13 +77,49 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task UpdateAsync(int id, UpdateTaskNoteDTO dto)
     {
-        var note = await _taskNoteRepository.GetByIdAsync(id, UserId);
-
-        if (note == null)
-            throw new NotFoundException("TaskNote not found");
+        var note = await GetTaskNoteAsync(id);
         
         note.Update(dto.Note);
         
+        await _taskNoteRepository.SaveAsync();
+    }
+
+    public async Task MarkAsDoneAsync(int id)
+    {
+        var taskNote = await GetTaskNoteAsync(id);
+
+        taskNote.MarkAsDone();
+
+        var taskItem = await GetTaskItemAsync(taskNote.TaskItemId);
+
+        var allNotesDone =
+            await _taskNoteRepository.AllNotesDoneAsync(taskItem.Id, id);
+
+        if (allNotesDone)
+        {
+            taskItem.Complete();
+        }
+        else
+        {
+            taskItem.InProgress();
+        }
+
+        await _taskNoteRepository.SaveAsync();
+    }
+
+    public async Task MarkAsUnDoneAsync(int id)
+    {
+        var taskNote = await _taskNoteRepository.GetByIdAsync(id, UserId);
+
+        if (taskNote is null)
+            throw new NotFoundException("TaskNote not found.");
+
+        taskNote.MarkAsUnDone();
+        
+        var taskItem = await GetTaskItemAsync(taskNote.TaskItemId);
+        
+       taskItem.InProgress();
+
         await _taskNoteRepository.SaveAsync();
     }
 }

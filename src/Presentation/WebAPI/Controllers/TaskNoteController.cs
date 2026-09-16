@@ -43,6 +43,22 @@ public class TaskNoteController : ControllerBase
         return NoContent();
     }
 
+    [HttpPatch("{id:int}/mark-as-done")]
+    public async Task<IActionResult> MarkAsDone(int id)
+    {
+        await _taskNoteService.MarkAsDoneAsync(id);
+        
+        return NoContent();
+    }
+    
+    [HttpPatch("{id:int}/mark-un-done")]
+    public async Task<IActionResult> MarkAsUnDone(int id)
+    {
+        await _taskNoteService.MarkAsUnDoneAsync(id);
+        
+        return NoContent();
+    }
+    
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

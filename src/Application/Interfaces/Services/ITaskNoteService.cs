@@ -11,4 +11,8 @@ public interface ITaskNoteService
     Task DeleteAsync(int id);
     
     Task UpdateAsync(int id, UpdateTaskNoteDTO dto);
+    
+    Task MarkAsDoneAsync(int id);
+
+    Task MarkAsUnDoneAsync(int id);
 }

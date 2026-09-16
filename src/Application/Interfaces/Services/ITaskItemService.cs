@@ -10,6 +10,8 @@ public interface ITaskItemService
     
     Task UpdateAsync(Guid id,UpdateTaskItemDTO dto);
     
+    Task InProgressAsync(Guid id);
+    
     Task CompletedAsync(Guid id);
     
     Task DeleteAsync(Guid id);

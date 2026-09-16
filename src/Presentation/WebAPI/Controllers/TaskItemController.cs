@@ -43,6 +43,14 @@ public class TaskItemController : ControllerBase
         return NoContent();
     }
     
+    [HttpPatch("{id:guid}/in-progress")]
+    public async Task<IActionResult> InProgress(Guid id)
+    {
+        await _taskItemService.InProgressAsync(id);
+
+        return NoContent();
+    }
+    
     [HttpPatch("{id:guid}/complete")]
     public async Task<IActionResult> Complete(Guid id)
     {
