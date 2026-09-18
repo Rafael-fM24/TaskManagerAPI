@@ -22,8 +22,6 @@ public static class DependencyInjection
 
         services.AddScoped<ITaskItemRepository, TaskItemRepository>();
         
-        services.AddScoped<ITaskNoteRepository, TaskNoteRepository>();
-        
         services.AddScoped<IUserRepository, UserRepository>();
         
         services.AddScoped<ITokenService, TokenService>();

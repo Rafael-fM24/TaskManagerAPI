@@ -23,11 +23,32 @@ public class TaskItemRepository : ITaskItemRepository
                 t.UserId == userId);
     }
 
-    public async Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(Guid userId, int pageNumber, int pageQuantity)
+    public async Task<IReadOnlyList<TaskItem>> GetByUserIdAsync(
+        Guid userId, 
+        int pageNumber, 
+        int pageQuantity)
     {
         return await _context.TaskItems
             .Where(t => t.UserId == userId)
             .OrderBy(t => t.Created)
+            .Skip(pageNumber * pageQuantity)
+            .Take(pageQuantity)
+            .ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<TaskNote>> GetNotesAsync(
+        Guid taskItemId,
+        Guid userId, 
+        int pageNumber, 
+        int pageQuantity)
+    {
+        return await _context.TaskNotes
+            .Where(n =>
+                EF.Property<Guid>(n, "TaskItemId") == taskItemId &&
+                _context.TaskItems.Any(t =>
+                    t.Id == taskItemId &&
+                    t.UserId == userId))
+            .OrderBy(n => n.Id)
             .Skip(pageNumber * pageQuantity)
             .Take(pageQuantity)
             .ToListAsync();

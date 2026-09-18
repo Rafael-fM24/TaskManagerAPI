@@ -1,4 +1,5 @@
 using Application.DTOs.TaskItem;
+using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using AutoMapper;
@@ -39,6 +40,17 @@ public class TaskItemService : ITaskItemService
          var taskItems = await _taskItemRepository.GetByUserIdAsync(UserId, pageNumber, pageQuantity);
 
         return _mapper.Map<IReadOnlyList<TaskItemDTO>>(taskItems);
+    }
+
+    public async Task<IReadOnlyList<TaskNoteDTO>> GetNotesAsync(Guid taskItemId, int pageNumber, int pageQuantity)
+    {
+        var notes = await _taskItemRepository.GetNotesAsync(
+            taskItemId,
+            UserId,
+            pageNumber,
+            pageQuantity);
+
+        return _mapper.Map<IReadOnlyList<TaskNoteDTO>>(notes);
     }
 
     public async Task CreateAsync(CreateTaskItemDTO dto)

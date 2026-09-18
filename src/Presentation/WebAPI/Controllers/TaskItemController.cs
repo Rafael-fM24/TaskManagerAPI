@@ -1,4 +1,5 @@
 using Application.DTOs.TaskItem;
+using Application.DTOs.TaskNote;
 using Application.Interfaces.Services;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +14,16 @@ namespace WebAPI.Controllers;
 public class TaskItemController : ControllerBase
 {
     private readonly ITaskItemService _taskItemService;
+    private readonly ITaskNoteService _taskNoteService;
 
-    public TaskItemController(ITaskItemService taskItemService)
+    public TaskItemController(ITaskItemService taskItemService, ITaskNoteService taskNoteService)
     {
         _taskItemService = taskItemService ?? throw new ArgumentNullException(nameof(taskItemService));
+        _taskNoteService = taskNoteService ?? throw new ArgumentNullException(nameof(taskNoteService));
     }
     
+    
+    // task
     [HttpGet]
     public async Task<IActionResult> GetMyTasks(int pageNumber, int pageQuantity)
     {
@@ -66,4 +71,57 @@ public class TaskItemController : ControllerBase
 
         return NoContent();
     }
+
+    
+    // note
+    [HttpGet("{taskItemId:guid}/Notes")]
+    public async Task<IActionResult> GetNotes(Guid taskItemId, int pageNumber, int pageQuantity)
+    {
+        var notes = await _taskItemService.GetNotesAsync(
+            taskItemId,
+            pageNumber,
+            pageQuantity);
+
+        return Ok(notes);
+    }
+
+    [HttpPost("{taskItemId:guid}/Notes")]
+    public async Task<IActionResult> CreateNote(Guid taskItemId, CreateTaskNoteDTO dto)
+    {
+        await _taskNoteService.CreateAsync(taskItemId, dto);
+        
+        return StatusCode(StatusCodes.Status201Created);
+    }
+    
+    [HttpPut("{taskItemId:guid}/notes/{id:int}")]
+     public async Task<IActionResult> UpdateNote(Guid taskItemId, int id, UpdateTaskNoteDTO dto)
+     {
+         await _taskNoteService.UpdateAsync(taskItemId, id, dto);
+
+         return NoContent();
+     }
+     
+    [HttpPatch("{taskItemId:guid}/notes/{id:int}/mark-as-done")]
+     public async Task<IActionResult> MarkAsDone(Guid taskItemId, int id)
+     {
+         await _taskNoteService.MarkAsDoneAsync(taskItemId, id);
+         
+         return NoContent();
+     }
+     
+     [HttpPatch("{taskItemId:guid}/notes/{id:int}/mark-un-done")]
+     public async Task<IActionResult> MarkAsUnDone(Guid taskItemId, int id)
+     {
+         await _taskNoteService.MarkAsUndoneAsync(taskItemId, id);
+         
+         return NoContent();
+     }
+     
+     [HttpDelete("{taskItemId:guid}/notes/{id:int}")]
+     public async Task<IActionResult> DeleteNote(Guid taskItemId, int id)
+     {
+         await _taskNoteService.DeleteAsync(taskItemId, id);
+         
+         return NoContent();
+     }
 }

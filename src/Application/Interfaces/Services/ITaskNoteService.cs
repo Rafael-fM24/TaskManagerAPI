@@ -4,15 +4,17 @@ namespace Application.Interfaces.Services;
 
 public interface ITaskNoteService
 {
-    Task<IReadOnlyList<TaskNoteDTO>> GetAllAsync(Guid taskItemId, int pageNumber, int pageQuantity);
-    
     Task CreateAsync(Guid taskItemId, CreateTaskNoteDTO dto);
     
-    Task DeleteAsync(int id);
+    Task UpdateAsync(Guid taskItemId, int id, UpdateTaskNoteDTO dto);
     
-    Task UpdateAsync(int id, UpdateTaskNoteDTO dto);
+    Task DeleteAsync(Guid taskItemId,int id);
     
-    Task MarkAsDoneAsync(int id);
+    Task MarkAsDoneAsync(
+        Guid taskItemId,
+        int noteId);
 
-    Task MarkAsUnDoneAsync(int id);
+    Task MarkAsUndoneAsync(
+        Guid taskItemId,
+        int noteId);
 }

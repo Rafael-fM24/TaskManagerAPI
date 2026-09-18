@@ -1,10 +1,16 @@
 using Application.DTOs.TaskItem;
+using Application.DTOs.TaskNote;
 
 namespace Application.Interfaces.Services;
 
 public interface ITaskItemService
 {
     Task <IReadOnlyList<TaskItemDTO>> GetAllTasksAsync(int pageNumber, int pageQuantity);
+    
+    Task<IReadOnlyList<TaskNoteDTO>> GetNotesAsync(
+        Guid taskItemId,
+        int pageNumber,
+        int pageQuantity);
     
     Task CreateAsync(CreateTaskItemDTO dto);
     

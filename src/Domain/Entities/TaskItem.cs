@@ -21,7 +21,9 @@ public class TaskItem
     
     public PriorityLevel Priority { get; private set; }
     
-    public ICollection<TaskNote> Notes { get; private set; } = new List<TaskNote>(); 
+    private readonly List<TaskNote> _notes = new();
+
+    public IReadOnlyCollection<TaskNote> Notes => _notes.AsReadOnly();
 
     private TaskItem()
     {
@@ -74,14 +76,67 @@ public class TaskItem
     public void Complete()
     {
         if (Status == Status.Pending)
-            throw new DomainException("A pending task cannot be completed.");
+            throw new DomainException(
+                "A pending task cannot be completed.");
 
-        if (Status != Status.Completed)
-            Status = Status.Completed;
+        if (_notes.Any(n => !n.Done))
+            throw new DomainException(
+                "All task notes must be completed.");
+
+        Status = Status.Completed;
     }
     
-    public void CompleteFromNotes()
+    public TaskNote AddNote(string note)
     {
-        Status = Status.Completed;
+        var taskNote = new TaskNote(note);
+
+        _notes.Add(taskNote);
+
+        return taskNote;
+    }
+
+    public void UpdateNote(int noteId, string note)
+    {
+        var taskNote = GetNote(noteId);
+
+        taskNote.Update(note);
+    }
+
+    public void RemoveNote(int noteId)
+    {
+        var taskNote = GetNote(noteId);
+
+        _notes.Remove(taskNote);
+    }
+
+    public void MarkNoteAsDone(int noteId)
+    {
+        var taskNote = GetNote(noteId);
+
+        taskNote.MarkAsDone();
+    }
+
+    public void MarkNoteAsUndone(int noteId)
+    {
+        var taskNote = GetNote(noteId);
+
+        taskNote.MarkAsUnDone();
+    }
+    
+    public bool AllNotesDone(int currentNoteId)
+    {
+        return Notes
+            .Where(n => n.Id != currentNoteId)
+            .All(n => n.Done);
+    }
+
+    private TaskNote GetNote(int noteId)
+    {
+        var note = _notes.FirstOrDefault(n => n.Id == noteId);
+
+        if (note == null)
+            throw new NotFoundException("TaskNote not found.");
+
+        return note;
     }
 }
