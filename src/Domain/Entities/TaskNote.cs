@@ -38,7 +38,7 @@ public class TaskNote
         Done = true;
     }
 
-    internal void MarkAsUnDone()
+    internal void MarkAsUndone()
     {
         Done = false;
     }

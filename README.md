@@ -62,7 +62,7 @@ TaskManagerAPI/
 │   └── Presentation/
 │       └── WebAPI/
 │
-├── test/
+├── tests/
 │   ├── Domain.UnitTest/
 │   └── Application.UnitTest/
 │
@@ -229,27 +229,20 @@ Current version:
 
 ### Tasks
 
-| Method | Endpoint                                       | Description                                     |
-|--------|------------------------------------------------|-------------------------------------------------|
-| GET    | `/api/v1/Taskitem?pageNumber=0&pageQuantity=5` | Get paginated tasks from the authenticated user |
-| POST   | `/api/v1/Taskitem`                             | Create a new task                               |
-| PUT    | `/api/v1/Taskitem/{id}`                        | Update an existing task                         |
-| DELETE | `/api/v1/Taskitem/{id}`                        | Delete a task                                   |
-| PATCH  | `/api/v1/Taskitem/{id}/in-progress`            | Updates the task status to "in progress"        |
-| PATCH  | `/api/v1/Taskitem/{id}/complete`               | Updates the task status to "complete"           |
-
----
-
-### Task Notes
-
-| Method | Endpoint                                                    | Description                     |
-|--------|-------------------------------------------------------------|---------------------------------|
-| GET    | `/api/v1/Tasknote/{taskItemId}?pageNumber=0&pageQuantity=5` | Get paginated notes from a task |
-| POST   | `/api/v1/Tasknote/{taskItemId}`                             | Create a new note for a task    |
-| PUT    | `/api/v1/Tasknote/{id}`                                     | Update a task note              |
-| DELETE | `/api/v1/Tasknote/{id}`                                     | Delete a task note              |
-| PATCH  | `/api/v1/Tasknote/{id}/mark-as-done`                        | marks a task note as done       |
-| PATCH  | `/api/v1/Tasknote/{id}/mark-un-done`                         | marks a task note as un done   |
+| Method | Endpoint                                                           | Description                                     |
+|--------|--------------------------------------------------------------------|-------------------------------------------------|
+| GET    | `/api/v1/TaskItem?pageNumber=0&pageQuantity=5`                     | Get paginated tasks from the authenticated user |
+| POST   | `/api/v1/TaskItem`                                                 | Create a new task                               |
+| PUT    | `/api/v1/TaskItem/{id}`                                            | Update an existing task                         |
+| DELETE | `/api/v1/TaskItem/{id}`                                            | Delete a task                                   |
+| PATCH  | `/api/v1/TaskItem/{id}/in-progress`                                | Updates the task status to "in progress"        |
+| PATCH  | `/api/v1/TaskItem/{id}/complete`                                   | Updates the task status to "complete"           |
+| GET    | `/api/v1/TaskItem/{taskItemId}/notes/?pageNumber=0&pageQuantity=5` | Get paginated notes from a task |
+| POST   | `/api/v1/TaskItem/{taskItemId}/notes`                              | Create a new note for a task    |
+| PUT    | `/api/v1/TaskItem/{taskItemId}/notes/{id}`                         | Update a task note              |
+| DELETE | `/api/v1/TaskItem/{taskItemId}/notes/{id}`                         | Delete a task note              |
+| PATCH  | `/api/v1/TaskItem/{taskItemId}/notes/{id}/mark-as-done`            | marks a task note as done       |
+| PATCH  | `/api/v1/TaskItem/{taskItemId}/notes/{id}/mark-as-undone`          | marks a task note as un done   |
 
 > Protected endpoints require a valid JWT token in the `Authorization` header.
 

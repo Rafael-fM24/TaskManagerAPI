@@ -120,7 +120,7 @@ public class TaskItem
     {
         var taskNote = GetNote(noteId);
 
-        taskNote.MarkAsUnDone();
+        taskNote.MarkAsUndone();
     }
     
     public bool AllNotesDone(int currentNoteId)

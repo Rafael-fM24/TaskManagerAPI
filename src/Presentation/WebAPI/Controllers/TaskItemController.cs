@@ -22,8 +22,6 @@ public class TaskItemController : ControllerBase
         _taskNoteService = taskNoteService ?? throw new ArgumentNullException(nameof(taskNoteService));
     }
     
-    
-    // task
     [HttpGet]
     public async Task<IActionResult> GetMyTasks(int pageNumber, int pageQuantity)
     {
@@ -71,10 +69,8 @@ public class TaskItemController : ControllerBase
 
         return NoContent();
     }
-
     
-    // note
-    [HttpGet("{taskItemId:guid}/Notes")]
+    [HttpGet("{taskItemId:guid}/notes")]
     public async Task<IActionResult> GetNotes(Guid taskItemId, int pageNumber, int pageQuantity)
     {
         var notes = await _taskItemService.GetNotesAsync(
@@ -85,7 +81,7 @@ public class TaskItemController : ControllerBase
         return Ok(notes);
     }
 
-    [HttpPost("{taskItemId:guid}/Notes")]
+    [HttpPost("{taskItemId:guid}/notes")]
     public async Task<IActionResult> CreateNote(Guid taskItemId, CreateTaskNoteDTO dto)
     {
         await _taskNoteService.CreateAsync(taskItemId, dto);
@@ -109,8 +105,8 @@ public class TaskItemController : ControllerBase
          return NoContent();
      }
      
-     [HttpPatch("{taskItemId:guid}/notes/{id:int}/mark-un-done")]
-     public async Task<IActionResult> MarkAsUnDone(Guid taskItemId, int id)
+     [HttpPatch("{taskItemId:guid}/notes/{id:int}/mark-as-undone")]
+     public async Task<IActionResult> MarkAsUndone(Guid taskItemId, int id)
      {
          await _taskNoteService.MarkAsUndoneAsync(taskItemId, id);
          
