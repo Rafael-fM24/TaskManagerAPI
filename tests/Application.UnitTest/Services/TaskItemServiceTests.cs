@@ -1,4 +1,5 @@
 using Application.DTOs.TaskItem;
+using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services;
@@ -12,12 +13,12 @@ namespace Application.UnitTest.Services;
 
 public class TaskItemServiceTests
 {
-    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
-    private readonly Mock<ITaskItemRepository> _taskItemRepositoryMock = new();
+    private readonly Mock<ITaskItemRepository> _taskItemRepositoryMock = new ();
     private readonly Mock<IMapper> _mapperMock = new();
+    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new();
     private readonly Guid _userId = Guid.NewGuid();
     private readonly List<TaskItem> _taskItems;
-
+    
     public TaskItemServiceTests()
     {
         _currentUserServiceMock
@@ -28,15 +29,15 @@ public class TaskItemServiceTests
         [
             new TaskItem(
                 _userId,
-                "Título1",
-                "Descrição1",
+                "Title1",
+                "Description1",
                 new DateTime(2026, 9, 10),
                 PriorityLevel.Low),
 
             new TaskItem(
                 _userId,
-                "Título2",
-                "Descrição2",
+                "Title2",
+                "Description2",
                 null,
                 PriorityLevel.High)
         ];
@@ -67,9 +68,9 @@ public class TaskItemServiceTests
         _mapperMock
             .Setup(x => x.Map<IReadOnlyList<TaskItemDTO>>(_taskItems))
             .Returns(taskItemsDTO);
-
+        
         var service = CreateService();
-
+        
         // Act
         var result = await service.GetAllTasksAsync(0, 5);
 
@@ -80,24 +81,78 @@ public class TaskItemServiceTests
         
         Assert.NotNull(result);
         Assert.Equal(taskItemsDTO, result);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.GetByUserIdAsync(_userId, 0, 5), 
+            Times.Once);
+        
+        _mapperMock.Verify(
+            x => x.Map<IReadOnlyList<TaskItemDTO>>(_taskItems), 
+            Times.Once);
     }
 
     [Fact]
+    public async Task GetNotesAsync_ShouldReturnNotes()
+    {
+        _taskItems[1].AddNote("Note1");
+        _taskItems[1].AddNote("Note2");
+        
+        var notes = _taskItems[1].Notes.ToList();
+
+        var notesDTO = new List<TaskNoteDTO>
+        {
+            new(),
+            new()
+        };
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetNotesAsync(
+                _taskItems[1].Id, 
+                _userId, 
+                0, 
+                5))
+            .ReturnsAsync(notes);
+        
+        _mapperMock
+            .Setup(x => x.Map<IReadOnlyList<TaskNoteDTO>>(notes))
+            .Returns(notesDTO);
+        
+        var service = CreateService();
+        
+        var result = await service.GetNotesAsync(_taskItems[1].Id,  0, 5);
+        
+        Assert.NotNull(result);
+        Assert.Equal(notesDTO, result);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.GetNotesAsync(
+                _taskItems[1].Id,
+                _userId,
+                0,
+                5),
+            Times.Once);
+
+        _mapperMock.Verify(
+            x => x.Map<IReadOnlyList<TaskNoteDTO>>(notes),
+            Times.Once);
+    }
+    
+    [Fact]
     public async Task CreateAsync_ShouldCreateTask()
     {
-        // Arrange
-        var dto = new CreateTaskItemDTO
+        var dto = new CreateTaskItemDTO()
         {
-            Title = "Title",
-            Description = "Description",
+            Title = "New Title",
+            Description = "New Description",
             DueDate = null,
-            Priority = PriorityLevel.None
+            Priority = PriorityLevel.None,
         };
-
-        // Act
+        
         var service = CreateService();
+        
+        // Act
         await service.CreateAsync(dto);
-
+        
         // Assert
         _taskItemRepositoryMock.Verify(
             x => x.Add(It.Is<TaskItem>(task =>
@@ -107,6 +162,10 @@ public class TaskItemServiceTests
                 task.DueDate == dto.DueDate &&
                 task.Priority == dto.Priority
             )),
+            Times.Once);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
             Times.Once);
     }
     
@@ -128,20 +187,20 @@ public class TaskItemServiceTests
 
         var service = CreateService();
 
-       // Act
-       await service.UpdateAsync(_taskItems[0].Id, dto);
+        // Act
+        await service.UpdateAsync(_taskItems[0].Id, dto);
        
-       // Assert
-       _taskItemRepositoryMock.Verify(
-           x => x.SaveAsync(),
-           Times.Once);
+        // Assert
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Once);
        
-       Assert.Equal(dto.Title, _taskItems[0].Title);
-       Assert.Equal(dto.Description, _taskItems[0].Description);
-       Assert.Equal(dto.DueDate, _taskItems[0].DueDate);
-       Assert.Equal(dto.Priority, _taskItems[0].Priority);
+        Assert.Equal(dto.Title, _taskItems[0].Title);
+        Assert.Equal(dto.Description, _taskItems[0].Description);
+        Assert.Equal(dto.DueDate, _taskItems[0].DueDate);
+        Assert.Equal(dto.Priority, _taskItems[0].Priority);
     }
-
+    
     [Fact]
     public async Task UpdateAsync_WhenTaskNotFound_ShouldThrowNotFoundException()
     {
@@ -168,7 +227,7 @@ public class TaskItemServiceTests
             x => x.SaveAsync(),
             Times.Never);
     }
-
+    
     [Theory]
     [InlineData(PriorityLevel.None)]
     [InlineData(PriorityLevel.Low)]
@@ -222,20 +281,18 @@ public class TaskItemServiceTests
         
         Assert.Equal(Status.InProgress, _taskItems[0].Status);
     }
-    
+
     [Fact]
     public async Task InProgressAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
     {
         var taskItemId = Guid.NewGuid();
         
-        // Arrange
         _taskItemRepositoryMock
             .Setup(x => x.GetByIdAsync(taskItemId, _userId))
             .ReturnsAsync((TaskItem?)null);
         
         var service = CreateService();
-
-        // Act & Assert
+        
         await Assert.ThrowsAsync<NotFoundException>(
             () => service.InProgressAsync(taskItemId));
         
