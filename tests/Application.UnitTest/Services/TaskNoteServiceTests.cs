@@ -2,7 +2,6 @@ using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Application.Services;
-using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
@@ -12,107 +11,55 @@ namespace Application.UnitTest.Services;
 
 public class TaskNoteServiceTests
 {
-    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new ();
-    private readonly Mock<ITaskNoteRepository> _taskNoteRepositoryMock = new ();
     private readonly Mock<ITaskItemRepository> _taskItemRepositoryMock = new ();
-    private readonly Mock<IMapper> _mapperMock = new ();
-    private readonly List<TaskNote> _taskNotes;
-        
-    private readonly TaskItem _taskItem = new(
-        Guid.NewGuid(),
-        "Task",
-        "Description",
-        null,
-        PriorityLevel.None
-    );
-    
+    private readonly Mock<ICurrentUserService> _currentUserServiceMock = new ();
+    private static readonly Guid UserId = Guid.NewGuid();
+    private readonly TaskItem _taskItem;
+
     public TaskNoteServiceTests()
     {
         _currentUserServiceMock
             .Setup(x => x.UserId)
-            .Returns(_taskItem.UserId);
+            .Returns(UserId);
         
-        _taskNotes =
-        [
-            new TaskNote(_taskItem.Id, "Note1"),
-            
-            new TaskNote(_taskItem.Id, "Note2")
-        ];
+        _taskItem = new (
+            UserId,
+            "Title",
+            "Description",
+            new DateTime(2026, 9, 10),
+            PriorityLevel.Low);
     }
 
-    private TaskNoteService CreateTaskNoteService()
+    private TaskNoteService CreateService()
     {
-        return new TaskNoteService(
-            _taskNoteRepositoryMock.Object,
-            _taskItemRepositoryMock.Object,
-            _currentUserServiceMock.Object,
-            _mapperMock.Object);
-    }
-
-    [Fact]
-    public async Task GetAllAsync_ShouldReturnNotes()
-    {
-        // Arrange
-        var taskNoteDTO = new List<TaskNoteDTO>
-        {
-            new(),
-            new()
-        };
-        
-        _taskItemRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskItem.Id, _taskItem.UserId))
-            .ReturnsAsync(_taskItem);
-        
-        _taskNoteRepositoryMock
-            .Setup(x => x.GetAllNotesAsync(_taskItem.Id, 0, 5))
-            .ReturnsAsync(_taskNotes);
-        
-        _mapperMock
-            .Setup(x => x.Map<IReadOnlyList<TaskNoteDTO>>(_taskNotes))
-            .Returns(taskNoteDTO);
-
-        var service = CreateTaskNoteService();
-        
-        // Act
-        await service.GetAllAsync(_taskItem.Id, 0, 5);
-        
-        // Assert
-        _taskNoteRepositoryMock.Verify(
-                x => x.GetAllNotesAsync(_taskItem.Id, 0, 5), 
-                Times.Once);
-        
-        _mapperMock.Verify(
-            x => x.Map<IReadOnlyList<TaskNoteDTO>>(_taskNotes),
-            Times.Once);
+        return new TaskNoteService(_taskItemRepositoryMock.Object, _currentUserServiceMock.Object);
     }
     
     [Fact]
-    public async Task CreateAsync_ShouldCreateNote()
+    public async Task CreateAsync_CreateAsync_ShouldCreateNote()
     {
-        // Assert
-        var dto = new CreateTaskNoteDTO
+        // Arrange
+        var dto = new CreateTaskNoteDTO()
         {
-            Note = "Note"
+            Note = "Note",
         };
         
         _taskItemRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskItem.Id, _taskItem.UserId))
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
             .ReturnsAsync(_taskItem);
-        
-        var service = CreateTaskNoteService();
-        
-        // Act 
+
+        var service = CreateService();
+
+        // Act
         await service.CreateAsync(_taskItem.Id, dto);
         
-        // Arrange
-        _taskNoteRepositoryMock.Verify(
-            x => x.Add(It.Is<TaskNote>(
-                taskNote => 
-                    taskNote.TaskItemId == _taskItem.Id &&
-                    taskNote.Note == dto.Note
-            )),
-            Times.Once
-        );
+        // Assert
+        Assert.Equal(dto.Note, _taskItem.Notes.FirstOrDefault()?.Note);
+        Assert.Equal(Status.InProgress, _taskItem.Status);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(), 
+            Times.Once);
     }
 
     [Fact]
@@ -121,20 +68,22 @@ public class TaskNoteServiceTests
         // Assert
         var taskItemId = Guid.NewGuid();
         
+        var dto = new CreateTaskNoteDTO()
+        {
+            Note = "Note",
+        };
+        
         _taskItemRepositoryMock
-            .Setup(x => x.GetByIdAsync(taskItemId, _taskItem.UserId))
+            .Setup(x => x.GetByIdAsync(taskItemId, UserId))
             .ReturnsAsync((TaskItem?)null);
-        
-        var service = CreateTaskNoteService();
 
-        // Act & Arrange
-        await Assert.ThrowsAsync<NotFoundException>( 
-            () => service.CreateAsync(taskItemId,  new CreateTaskNoteDTO
-            {
-                Note = "Note"
-            }));
+        var service = CreateService();
         
-        _taskNoteRepositoryMock.Verify(
+        // Act & Assert
+        await Assert.ThrowsAsync<NotFoundException>(
+            () => service.CreateAsync(taskItemId, dto));
+        
+        _taskItemRepositoryMock.Verify(
             x => x.SaveAsync(), 
             Times.Never);
     }
@@ -143,72 +92,102 @@ public class TaskNoteServiceTests
     public async Task UpdateAsync_ShouldUpdateNote()
     {
         // Arrange
-        var dto = new UpdateTaskNoteDTO
+        var taskNote = _taskItem.AddNote("Original note");
+        
+        var dto = new UpdateTaskNoteDTO()
         {
-            Note = "NoteUpdate"
+            Note = "Updated note"
         };
-
-        _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskNotes[0].Id, _taskItem.UserId))
-            .ReturnsAsync(_taskNotes[0]);
         
-        var service = CreateTaskNoteService();
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
         
-        // Act 
-        await service.UpdateAsync(_taskNotes[0].Id, dto);
+        var service = CreateService();
+        
+        // Act
+        await service.UpdateAsync(_taskItem.Id, taskNote.Id, dto);
         
         // Assert
-        Assert.Equal(dto.Note, _taskNotes[0].Note);
-        
-        _taskNoteRepositoryMock.Verify(
-            x => x.SaveAsync(), 
+        Assert.NotNull(_taskItem.Notes.FirstOrDefault()?.Note);
+        Assert.Equal(dto.Note, taskNote.Note);
+
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
+    {
+        var taskItemId = Guid.NewGuid();
+        var taskNoteId = 1;
+        
+        var dto = new UpdateTaskNoteDTO()
+        {
+            Note = "Updated note"
+        };
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(taskItemId, UserId))
+            .ReturnsAsync((TaskItem?)null);
+        
+        var service = CreateService();
+        
+        await Assert.ThrowsAsync<NotFoundException>(
+            () => service.UpdateAsync(taskItemId, taskNoteId, dto));
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Never);
     }
 
     [Fact]
     public async Task UpdateAsync_ShouldThrowNotFoundException_WhenNoteDoesNotExist()
     {
         // Arrange
-        var taskNoteId = 9;
-        
-        _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(taskNoteId, _taskItem.UserId))
-            .ReturnsAsync((TaskNote?)null);
-        
-        var service = CreateTaskNoteService();
+        var taskNoteId = 999;
+
+        var dto = new UpdateTaskNoteDTO
+        {
+            Note = "Updated note"
+        };
+
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
+
+        var service = CreateService();
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-            () => service.UpdateAsync(taskNoteId, new UpdateTaskNoteDTO
-            {
-                Note = "NoteUpdate"
-            }));
-        
-        _taskNoteRepositoryMock.Verify(
-            x => x.SaveAsync(), 
+            () => service.UpdateAsync(_taskItem.Id, taskNoteId, dto));
+
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
             Times.Never);
     }
-
+    
     [Fact]
     public async Task DeleteAsync_ShouldDeleteNote()
     {
         // Arrange
-        _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(_taskNotes[1].Id, _taskItem.UserId))
-            .ReturnsAsync(_taskNotes[1]);
+        var taskNote = _taskItem.AddNote("Note");
         
-        var service = CreateTaskNoteService();
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
         
-        // Act 
-        await service.DeleteAsync(_taskNotes[1].Id);
+        var service = CreateService();
         
-        // Arrange
-        _taskNoteRepositoryMock.Verify(
-            x => x.Remove(_taskNotes[1]), 
-            Times.Once);
+        // Act
+        await service.DeleteAsync(_taskItem.Id, taskNote.Id);
         
-        _taskNoteRepositoryMock.Verify(
-            x => x.SaveAsync(), 
+        // Assert
+        Assert.DoesNotContain(_taskItem.Notes, x => x.Note == taskNote.Note);
+
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
             Times.Once);
     }
 
@@ -216,20 +195,133 @@ public class TaskNoteServiceTests
     public async Task DeleteAsync_ShouldThrowNotFoundException_WhenNoteDoesNotExist()
     {
         // Arrange
-        var taskNoteId = 9;
+        var taskNoteId = 1;
         
-       _taskNoteRepositoryMock
-            .Setup(x => x.GetByIdAsync(taskNoteId,  _taskItem.UserId))
-            .ReturnsAsync((TaskNote?)null);
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
         
-        var service = CreateTaskNoteService();
+        var service = CreateService();
         
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException>(
-            () => service.DeleteAsync(taskNoteId));
+            () => service.DeleteAsync(_taskItem.Id, taskNoteId));
+
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Never);
+    }
+
+    [Fact]
+    public async Task MarkAsDoneAsync_ShouldCompleteTask_WhenAllNotesAreDone()
+    {
+        // Arrange
+        var taskNote = _taskItem.AddNote("Note");
         
-        _taskNoteRepositoryMock.Verify(
-            x => x.SaveAsync(), 
+        _taskItem.InProgress();
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
+        
+        var service = CreateService();
+        
+        await service.MarkAsDoneAsync(_taskItem.Id, taskNote.Id);
+        
+        Assert.True(taskNote.Done);
+        Assert.Equal(Status.Completed, _taskItem.Status);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Once);
+    }
+
+    
+    private static void SetNoteId(TaskNote note, int id)
+    {
+        typeof(TaskNote)
+            .GetProperty(nameof(TaskNote.Id))!
+            .SetValue(note, id);
+    }
+    
+    [Fact]
+    public async Task MarkAsDoneAsync_ShouldKeepTaskInProgress_WhenNotAllNotesAreDone()
+    {
+        // Arrange
+        var firstNote = _taskItem.AddNote("First note");
+        var secondNote = _taskItem.AddNote("Second note");
+        
+        SetNoteId(firstNote, 1);
+        SetNoteId(secondNote, 2);
+        
+        _taskItem.InProgress();
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
+        
+        var service = CreateService();
+        
+        await service.MarkAsDoneAsync(_taskItem.Id, firstNote.Id);
+        
+        
+        // Assert
+        Assert.True(firstNote.Done);
+        Assert.False(secondNote.Done);
+        Assert.Equal(Status.InProgress, _taskItem.Status);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task MarkAsUndoneAsync_ShouldMarkNoteAsUndone_AndSetTaskInProgress()
+    {
+        // Arrange
+        var taskNote = _taskItem.AddNote("Note");
+        
+        _taskItem.InProgress();
+        _taskItem.MarkNoteAsDone(taskNote.Id);
+        _taskItem.Complete();
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(_taskItem.Id, UserId))
+            .ReturnsAsync(_taskItem);
+        
+        var service = CreateService();
+        
+        // Act
+        await service.MarkAsUndoneAsync(_taskItem.Id, taskNote.Id);
+
+        // Assert
+        Assert.False(taskNote.Done);
+        Assert.Equal(Status.InProgress, _taskItem.Status);
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task MarkAsUndoneAsync_ShouldThrowNotFoundException_WhenTaskDoesNotExist()
+    {
+        // Arrange
+        var taskItemId = Guid.NewGuid();
+        var taskNoteId = 1;
+        
+        _taskItemRepositoryMock
+            .Setup(x => x.GetByIdAsync(taskItemId, UserId))
+            .ReturnsAsync((TaskItem?)null);
+        
+        var service = CreateService();
+        
+        // Act & Arrange
+        await Assert.ThrowsAsync<NotFoundException>(
+            () => service.MarkAsUndoneAsync(taskItemId, taskNoteId));
+        
+        _taskItemRepositoryMock.Verify(
+            x => x.SaveAsync(),
             Times.Never);
     }
 }

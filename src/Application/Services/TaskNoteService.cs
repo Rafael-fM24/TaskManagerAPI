@@ -1,7 +1,6 @@
 using Application.DTOs.TaskNote;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
-using AutoMapper;
 using Domain.Exceptions;
 
 namespace Application.Services;
@@ -10,18 +9,13 @@ public class TaskNoteService : ITaskNoteService
 {
     private readonly ITaskItemRepository _taskItemRepository;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IMapper _mapper;
 
     private Guid UserId => _currentUserService.UserId;
 
-    public TaskNoteService(
-        ITaskItemRepository taskItemRepository,
-        ICurrentUserService currentUserService,
-        IMapper mapper)
+    public TaskNoteService(ITaskItemRepository taskItemRepository, ICurrentUserService currentUserService)
     {
         _taskItemRepository = taskItemRepository;
         _currentUserService = currentUserService;
-        _mapper = mapper;
     }
 
     public async Task CreateAsync(Guid taskItemId, CreateTaskNoteDTO dto)
@@ -32,6 +26,7 @@ public class TaskNoteService : ITaskNoteService
             throw new NotFoundException("Task not found.");
 
         task.AddNote(dto.Note);
+        task.InProgress();
 
         await _taskItemRepository.SaveAsync();
     }
@@ -67,8 +62,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task MarkAsDoneAsync(Guid taskItemId, int noteId)
     {
-        var task = await _taskItemRepository
-            .GetByIdAsync(taskItemId, UserId);
+        var task = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
 
         if (task == null)
             throw new NotFoundException("Task not found.");
@@ -85,8 +79,7 @@ public class TaskNoteService : ITaskNoteService
 
     public async Task MarkAsUndoneAsync(Guid taskItemId, int noteId)
     {
-        var task = await _taskItemRepository
-            .GetByIdAsync(taskItemId, UserId);
+        var task = await _taskItemRepository.GetByIdAsync(taskItemId, UserId);
 
         if (task == null)
             throw new NotFoundException("Task not found.");
